@@ -1,3 +1,6 @@
+/* exported getIndexForEvent, getFormattedEvents */
+/*jshint unused: false */
+
 var sugar = require('sugar');
 
 var getIndexForEvent = module.exports = function (event) {

@@ -1,3 +1,4 @@
 {
-  "event": "src/models/event.js"
+  "event": "src/models/event.js",
+  "event": "src/models/subject.js"
 }

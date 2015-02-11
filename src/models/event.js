@@ -1,4 +1,6 @@
-var uuid = require('node-uuid');
+var acquire = require('acquire'),
+  uuid = require('node-uuid'),
+  subject = acquire('subject');
 
 var requiredFields = {
   type: 'string',
@@ -15,7 +17,14 @@ var optionalFields = {
 };
 
 function createEventFromData(data) {
-  var event = new Event();
+  var event = new Event(),
+    createSubjects = function (subjects) {
+      for (var i in subjects) {
+        var subjData = subjects[i];
+        event.subjects.push(subject.createSubjectFromData(subjData));
+      }
+    };
+  
   event.id = uuid.v1();
   for (var rkey in requiredFields) {
     if (typeof data[rkey] !== requiredFields[rkey]) {
@@ -23,6 +32,11 @@ function createEventFromData(data) {
       throw Error('bad key');
     } else {
       event[rkey] = data[rkey];
+      if (rkey !== 'subjects') {
+        event[rkey] = data[rkey];
+      } else {
+        event.subjects = createSubjects(data.subjects);
+      }
     }
   }
   for (var okey in optionalFields) {
@@ -52,4 +66,5 @@ function Event(data) {
 Event.prototype.init = function () {};
 
 // export the class
-module.exports = Event;
+module.exports.createEventFromData = createEventFromData;
+module.exports.Event = Event;
