@@ -1,0 +1,17 @@
+{
+  "name": "chronogeist",
+  "version": "0.0.1",
+  "description": "Simple Event Logging Framework",
+  "dependencies": {
+    "elasticsearch": "x.x.x",
+    "sugar": "x.x.x",
+    "node-uuid": "x.x.x",
+    "acquire": "git://github.com/njpatel/acquire.git"
+  },
+  "engines": {
+    "node": "x.x.x",
+    "npm": "x.x.x"
+  },
+  "repository": "git@bitbucket.org:seiflotfy/chronogeist.git",
+  "private": true
+}
