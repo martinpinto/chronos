@@ -4,11 +4,16 @@ var acquire = require('acquire'),
 var data = {
   type: 'click',
   actor: 'user1',
-  subjects: [],
+  subjects: [{
+  	id: 'http://google.com',
+	type: 'website',
+	text: 'Google',
+	domain: 'google.com'
+  }],
   timestamp: 1234567890,
   typeDomain: 'clickFromWebsite',
   orign: 'http://youtube.com',
   payload: []
 };
-var e = event.createEventFromData([data]);
+var e = event.createEventFromData(data);
 console.log(e);

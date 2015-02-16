@@ -35,17 +35,19 @@ Event.prototype.init = function () {};
 function createEventFromData(data) {
   var event = new Event(),
     createSubjects = function (subjects) {
+      var newSubjects = []
       for (var i in subjects) {
         var subjData = subjects[i];
-        event.subjects.push(subject.createSubjectFromData(subjData));
+        newSubjects.push(subject.createSubjectFromData(subjData));
       }
+      return newSubjects;
     };
 
   event.id = uuid.v1();
   for (var rkey in requiredFields) {
     if (typeof data[rkey] !== requiredFields[rkey]) {
       // TODO: Improve error message
-      throw Error('bad key');
+      throw Error('bad key: ' + rkey + " " + typeof data[rkey]);
     } else {
       event[rkey] = data[rkey];
       if (rkey !== 'subjects') {

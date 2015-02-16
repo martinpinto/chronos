@@ -16,7 +16,7 @@ function createSubjectFromData(data) {
   for (var rkey in requiredFields) {
     if (typeof data[rkey] !== requiredFields[rkey]) {
       // TODO: Improve error message
-      throw Error('bad key');
+      throw Error('bad key: ' + rkey + " " + typeof data[rkey]);
     } else {
       subj[rkey] = data[rkey];
     }
