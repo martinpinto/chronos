@@ -35,7 +35,7 @@ Event.prototype.init = function () {};
 function createEventFromData(data) {
   var event = new Event(),
     createSubjects = function (subjects) {
-      var newSubjects = []
+      var newSubjects = [];
       for (var i in subjects) {
         var subjData = subjects[i];
         newSubjects.push(subject.createSubjectFromData(subjData));
@@ -47,7 +47,7 @@ function createEventFromData(data) {
   for (var rkey in requiredFields) {
     if (typeof data[rkey] !== requiredFields[rkey]) {
       // TODO: Improve error message
-      throw Error('bad key: ' + rkey + " " + typeof data[rkey]);
+      throw Error('bad key: ' + rkey + ' ' + typeof data[rkey]);
     } else {
       event[rkey] = data[rkey];
       if (rkey !== 'subjects') {
