@@ -10,5 +10,5 @@ var data = {
   orign: 'http://youtube.com',
   payload: []
 };
-console.log(event);
-var event = event.createEventFromData(data);
+var e = event.createEventFromData([data]);
+console.log(e);

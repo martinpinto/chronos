@@ -12,24 +12,23 @@ var optionalFields = {
 };
 
 function createSubjectFromData(data) {
-  var event = new Subject();
-  event.id = uuid.v1();
+  var subj = new Subject();
   for (var rkey in requiredFields) {
     if (typeof data[rkey] !== requiredFields[rkey]) {
       // TODO: Improve error message
       throw Error('bad key');
     } else {
-      event[rkey] = data[rkey];
+      subj[rkey] = data[rkey];
     }
   }
   for (var okey in optionalFields) {
     if (data[okey] && typeof data[okey] !== optionalFields[okey]) {
       throw Error('bad key');
     } else {
-      event[okey] = data[okey];
+      subj[okey] = data[okey];
     }
   }
-  return event;
+  return subj;
 }
 
 function Subject(data) {
