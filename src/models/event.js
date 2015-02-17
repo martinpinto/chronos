@@ -73,6 +73,7 @@ function createEventFromData(data) {
         event[okey] = data[okey];
       }
     }
+    event.systemTimestamp = Date.now();
     return event;
   }
   // export the class
