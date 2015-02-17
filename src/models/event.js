@@ -50,6 +50,7 @@ function createEventFromData(data) {
         return newSubjects;
       };
 
+    event.systemTimestamp = Date.now();
     event.id = uuid.v4();
     
     // Throw error if event has unsupported field
@@ -82,7 +83,6 @@ function createEventFromData(data) {
         event[okey] = data[okey];
       }
     }
-    event.systemTimestamp = Date.now();
     return event;
   }
   // export the class
