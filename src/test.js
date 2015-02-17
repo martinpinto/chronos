@@ -11,7 +11,7 @@ var data1 = {
   }],
   timestamp: Date.now(),
   typeDomain: 'clickFromWebsite',
-  orign: 'http://youtube.com',
+  origin: 'http://youtube.com',
   payload: []
 };
 
@@ -22,11 +22,11 @@ var data2 = {
     id: 'http://google.com',
     type: 'website',
     text: 'Google',
-    domain: 'google.com'
+    domain: 'google.com',
   }],
   timestamp: Date.now() + 86400000,
   typeDomain: 'clickFromWebsite',
-  orign: 'http://youtube.com',
+  origin: 'http://youtube.com',
   payload: []
 };
 
