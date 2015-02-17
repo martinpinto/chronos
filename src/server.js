@@ -1,13 +1,17 @@
-var Hapi = require('hapi');
+var Hapi = require('hapi'),
+    acquire = require('acquire'),
+    Engine = acquire('engine').Engine;
 
 // Create a server with a host and port
 var Server = function () {
   this.server = null;
+  this.engine = null;
   this.init();
 };
 
 Server.prototype.init = function () {
   var self = this;
+  self.engine = new Engine();
   self.server = new Hapi.Server();
   self.server.connection({
     host: 'localhost',

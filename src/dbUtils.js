@@ -23,8 +23,11 @@ var getFormattedEvents = module.exports = function (events) {
       }
     });
     bulkEvents.push({
-        title: 'foo'
+      title: 'foo'
     });
   }
   return bulkEvents;
 };
+
+module.exports.getIndexForEvent = getIndexForEvent;
+module.exports.getFormattedEvents = getFormattedEvents;

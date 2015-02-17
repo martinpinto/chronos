@@ -1,5 +1,6 @@
 var elasticsearch = require('elasticsearch'),
-  dbUtils = require('dbUtils');
+  acquire = require('acquire'),
+  dbUtils = acquire('dbUtils');
 
 function DB() {
   this.esClient = null;
@@ -35,4 +36,4 @@ DB.prototype.addEvents = function (events, callback) {
 };
 
 // export the class
-module.exports = DB;
+module.exports.DB = DB;
