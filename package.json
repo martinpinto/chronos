@@ -6,7 +6,8 @@
     "elasticsearch": "x.x.x",
     "sugar": "x.x.x",
     "node-uuid": "x.x.x",
-    "acquire": "git://github.com/njpatel/acquire.git"
+    "acquire": "git://github.com/njpatel/acquire.git",
+    "hapi": "x.x.x"
   },
   "engines": {
     "node": "x.x.x",
