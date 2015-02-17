@@ -11,26 +11,35 @@ function DB() {
 DB.prototype.init = function () {
   var self = this;
   self.esClient = new elasticsearch.Client({
-    host: 'localhost:9200',
-    log: 'trace'
+    host: 'localhost:9200'
   });
 };
 
 DB.prototype.addEvents = function (events, callback) {
   var self = this;
 
-  // TODO: check if each event is valid
-  for (var i in events) {
-    var event = events[i];
-    event.index = dbUtils.getIndexForTimestamp(event.timestamp);
-  }
-  
+  // Assign proper indices toe the events
+  events.map(function (event) {
+    event.index = dbUtils.getIndexForEvent(event);
+    return event;
+  });
+
   // Write to DB
-  var formattedEvents = dbUtils.getFormattedEvents(events);
   self.esClient.bulk({
-    body: formattedEvents
+    body: dbUtils.getFormattedEvents(events)
   }, function (err, resp) {
-    callback(err, resp);
+    var result = [];
+    if (!err) {
+      var items = resp.items;
+      for (var i in items) {
+        result.push({
+          index: items[i].index._index,
+          type: items[i].index._type,
+          id: items[i].index._id
+        });
+      }
+    }
+    callback(err, result);
   });
 
 };
