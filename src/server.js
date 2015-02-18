@@ -23,17 +23,19 @@ Server.prototype.init = function () {
     method: 'POST',
     path: '/add',
     handler: function (request, reply) {
-      try {
-        self.engine.add(request.payload, function (err, res) {
-          if (err) {
-            return reply(JSON.stringify(err).code(500));
-          }
-          return reply(res);
-        });
+      //try {
+      self.engine.add(request.payload, function (err, res) {
+        if (err) {
+          return reply(JSON.stringify(err).code(500));
+        }
+        return reply(res);
+      });
+      /*  
       } catch (ex) {
         console.log(ex)
         reply(JSON.stringify({message: ex.message})).code(500);
       }
+      */
     }
   });
 };

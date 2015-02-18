@@ -1,7 +1,9 @@
 /* exported getIndexForEvent, getFormattedEvents */
 /*jshint unused: false */
 
-var sugar = require('sugar');
+var sugar = require('sugar'),
+  acquire = require('acquire'),
+  event = acquire('event');
 
 var getIndexForEvent = function (event) {
   var date = Date.create(event.timestamp),
@@ -31,5 +33,32 @@ var getFormattedEvents = function (events) {
   return bulkEvents;
 };
 
+
+function getEventMapping() {
+  var fieldMapping = {
+    type: 'string',
+    index: 'not_analyzed',
+    fields: {
+      analyzed: {
+        type: 'string',
+        index: 'analyzed'
+      }
+    }
+  };
+
+  var mapping = {id: fieldMapping}
+  for (var field in event.requiredFields) {
+    if (event.requiredFields[field] == 'string')
+      mapping[field] = fieldMapping;
+  }
+  for (var field in event.optionalFields) {
+    if (event.optionalFields[field] == 'string')
+      mapping[field] = fieldMapping;
+  }
+  return mapping;
+}
+
+
 module.exports.getIndexForEvent = getIndexForEvent;
 module.exports.getFormattedEvents = getFormattedEvents;
+module.exports.getEventMapping = getEventMapping;

@@ -7,7 +7,8 @@
     "sugar": "x.x.x",
     "node-uuid": "x.x.x",
     "acquire": "git://github.com/njpatel/acquire.git",
-    "hapi": "x.x.x"
+    "hapi": "x.x.x",
+    "seq": "x.x.x"
   },
   "engines": {
     "node": "x.x.x",

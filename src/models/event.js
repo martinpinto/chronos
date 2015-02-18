@@ -88,3 +88,5 @@ function createEventFromData(data) {
   // export the class
 module.exports.createEventFromData = createEventFromData;
 module.exports.Event = Event;
+module.exports.requiredFields = requiredFields;
+module.exports.optionalFields = optionalFields;
