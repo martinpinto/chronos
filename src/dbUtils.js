@@ -5,6 +5,7 @@ var sugar = require('sugar'),
   acquire = require('acquire'),
   event = acquire('event');
 
+
 var getIndexForEvent = function (event) {
   var date = Date.create(event.timestamp),
     day = date.getUTCDate(),
@@ -33,8 +34,7 @@ var getFormattedEvents = function (events) {
   return bulkEvents;
 };
 
-
-function getEventMapping() {
+var getEventMapping = function () {
   var fieldMapping = {
     type: 'string',
     index: 'not_analyzed',
@@ -46,7 +46,9 @@ function getEventMapping() {
     }
   };
 
-  var mapping = {id: fieldMapping}
+  var mapping = {
+    id: fieldMapping
+  }
   for (var field in event.requiredFields) {
     if (event.requiredFields[field] == 'string')
       mapping[field] = fieldMapping;
@@ -56,7 +58,7 @@ function getEventMapping() {
       mapping[field] = fieldMapping;
   }
   return mapping;
-}
+};
 
 
 module.exports.getIndexForEvent = getIndexForEvent;

@@ -17,44 +17,41 @@ DB.prototype.init = function () {
   });
 };
 
-DB.prototype.createIndices = function (events) {
+DB.prototype.createIndices = function (events, callback) {
   var self = this,
     indices = events.map(function (event) {
       return event.index;
-    }).unique();
-
-  console.log(indices);
+    }).unique(),
+    missingIndices = {};
 
   new Seq(indices)
-    .seqMap(function (index, i) {
+    .seqEach(function (index) {
       var that = this;
       self.esClient.indices.exists({
         index: index
-      }, function (err, resp, status) {
-        var res = {
-          index: index,
-          exists: resp
-        };
-        console.log(res);
-        that(err, {
-          index: index,
-          exists: resp
-        });
+      }, function (err, resp) {
+        if (resp === true) {
+          that();
+        } else {
+          self.esClient.indices.create({
+            index: index,
+            body: {
+              mappings: {
+                _default_: {
+                  properties: dbUtils.getEventMapping()
+                }
+              }
+            }
+          }, function (err, resp) {
+            console.log(err, resp);
+            if (err) throw err;
+            that();
+          });
+        }
       });
     })
-    .seq(function (data) {
-      var that = this;
-      console.log(typeof data)
-      console.log("-->", data);
-    })
-    .seqMap(function (index, i) {
-      var that = this;
-      console.log(index)
-    })
-    .catch(function (err) {
-      console.error(err.stack ? err.stack : err)
-    });
-}
+    .seq(callback)
+};
 
 DB.prototype.addEvents = function (events, callback) {
   var self = this;
@@ -65,27 +62,25 @@ DB.prototype.addEvents = function (events, callback) {
     return event;
   });
 
-  self.createIndices(events);
-
-
-  // Write to DB
-  self.esClient.bulk({
-    body: dbUtils.getFormattedEvents(events)
-  }, function (err, resp) {
-    var result = [];
-    if (!err) {
-      var items = resp.items;
-      for (var i in items) {
-        result.push({
-          index: items[i].index._index,
-          type: items[i].index._type,
-          id: items[i].index._id
-        });
+  self.createIndices(events, function (err, result) {
+    // Write to DB
+    self.esClient.bulk({
+      body: dbUtils.getFormattedEvents(events)
+    }, function (err, resp) {
+      var result = [];
+      if (!err) {
+        var items = resp.items;
+        for (var i in items) {
+          result.push({
+            index: items[i].index._index,
+            type: items[i].index._type,
+            id: items[i].index._id
+          });
+        }
       }
-    }
-    callback(err, result);
+      callback(err, result);
+    });
   });
-
 };
 
 // export the class
