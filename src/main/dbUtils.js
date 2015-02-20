@@ -94,10 +94,7 @@ var getSubjectMapping = function () {
   return mapping;
 };
 
-
 module.exports.getIndexForEvent = getIndexForEvent;
 module.exports.getFormattedEvents = getFormattedEvents;
 module.exports.getEventMapping = getEventMapping;
 module.exports.getSubjectMapping = getSubjectMapping;
-
-console.log(getEventMapping())
