@@ -1,8 +1,8 @@
 {
   "event": "src/models/event.js",
   "subject": "src/models/subject.js",
-  "server": "src/server.js",
-  "engine": "src/engine.js",
-  "db": "src/db.js",
-  "dbUtils": "src/dbUtils.js"
+  "server": "src/main/server.js",
+  "engine": "src/main/engine.js",
+  "db": "src/main/db.js",
+  "dbUtils": "src/main/dbUtils.js"
 }
