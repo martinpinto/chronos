@@ -21,36 +21,45 @@ DB.prototype.createIndices = function (events, callback) {
   var self = this,
     indices = events.map(function (event) {
       return event.index;
-    }).unique(),
-    missingIndices = {};
+    }).unique();
 
-  new Seq(indices)
-    .seqEach(function (index) {
-      var that = this;
-      self.esClient.indices.exists({
-        index: index
-      }, function (err, resp) {
-        if (resp === true) {
-          that();
-        } else {
-          self.esClient.indices.create({
-            index: index,
-            body: {
-              mappings: {
-                _default_: {
-                  properties: dbUtils.getEventMapping()
+  try {
+    new Seq(indices)
+      .seqEach(function (index) {
+        var that = this;
+        self.esClient.indices.exists({
+          index: index
+        }, function (err, resp) {
+          if (err) {
+            throw err;
+          }
+          if (resp === true) {
+            that();
+          } else {
+            self.esClient.indices.create({
+              index: index,
+              body: {
+                mappings: {
+                  _default_: {
+                    properties: dbUtils.getEventMapping()
+                  }
                 }
               }
-            }
-          }, function (err, resp) {
-            console.log(err, resp);
-            if (err) throw err;
-            that();
-          });
-        }
+            }, function (err) {
+              if (err) {
+                throw err;
+              }
+              that();
+            });
+          }
+        });
+      })
+      .seq(function () {
+        callback();
       });
-    })
-    .seq(callback)
+  } catch (ex) {
+    callback(ex);
+  }
 };
 
 DB.prototype.addEvents = function (events, callback) {
@@ -62,7 +71,11 @@ DB.prototype.addEvents = function (events, callback) {
     return event;
   });
 
-  self.createIndices(events, function (err, result) {
+  self.createIndices(events, function (err) {
+    if (err) {
+      callback(err);
+    }
+
     // Write to DB
     self.esClient.bulk({
       body: dbUtils.getFormattedEvents(events)
