@@ -1,6 +1,11 @@
 # Chronogeist
 
-A structured semnatic Event and Activity Log
+A structured semnatic Event and Activity Log on top of ElasticSearch. Communication is via RESTful API.
+To sum it up. This will take care of you ES index creation, sharding and document insertion. For now we support only the add operation.
+Reading can be done directly via ES for now but soon enough we will add reading via Chronogeist directly.
+
+This project is heavily based on the Architecture of Zeitgeist. 
+To understand the direction we are taking please read http://web.archive.org/web/20091121192011/http://www.grillbar.org/wordpress/?p=426.
 
 ## Event structure
 
