@@ -57,3 +57,5 @@ Subject.prototype.init = function () {};
 // export the class
 module.exports.createSubjectFromData = createSubjectFromData;
 module.exports.Subject = Subject;
+module.exports.requiredFields = requiredFields;
+module.exports.optionalFields = optionalFields;

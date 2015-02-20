@@ -4,14 +4,14 @@ var data1 = {
   type: 'click',
   actor: 'user1',
   subjects: [{
-    id: 'http://google.com',
+    id: 'http://yahoo.com',
     type: 'website',
-    text: 'Google',
-    domain: 'google.com'
+    text: 'Yahoo!',
+    domain: 'yahoo.com'
   }],
   timestamp: Date.now(),
   typeDomain: 'clickFromWebsite',
-  origin: 'http://youtube.com',
+  origin: 'http://yahoo.com',
   payload: []
 };
 
@@ -21,7 +21,7 @@ var data2 = {
   subjects: [{
     id: 'http://google.com',
     type: 'website',
-    text: 'Google',
+    text: 'Google Search',
     domain: 'google.com',
   }],
   timestamp: Date.now() + 86400000,
