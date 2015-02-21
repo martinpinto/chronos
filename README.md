@@ -1,7 +1,7 @@
 # Chronogeist
 
 A structured semantic Event and Activity Log on top of ElasticSearch (ES). Communication is via RESTful API.
-To sum it up. This will take care of you ES index creation, sharding and document insertion. For now we support only the add operation.
+To sum it up. This will take care of your ES index creation, sharding and document insertion. For now we support only the add operation.
 Reading can be done directly via ES for now but soon enough we will add reading via Chronogeist directly.
 
 This project is heavily based on the Architecture of Zeitgeist. 
