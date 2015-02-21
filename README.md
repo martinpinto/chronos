@@ -1,6 +1,6 @@
 # Chronogeist
 
-A structured semnatic Event and Activity Log on top of ElasticSearch. Communication is via RESTful API.
+A structured semantic Event and Activity Log on top of ElasticSearch (ES). Communication is via RESTful API.
 To sum it up. This will take care of you ES index creation, sharding and document insertion. For now we support only the add operation.
 Reading can be done directly via ES for now but soon enough we will add reading via Chronogeist directly.
 
@@ -23,9 +23,9 @@ These are the fields required for Events to be inserted and also the fields that
 | origin          | string    |          | x        |
 | payload         | object    |          | x        |
 
-Note: subjects is a list of subject jsons as described below
+Note: subjects is a list of subject JSONs as described below
 
-## Subject structue
+## Subject structure
 
 These are the fields required for subjects to be inserted and also the fields that will be stored into the DB
 
