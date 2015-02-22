@@ -7,7 +7,7 @@ var requiredFields = {
   actor: 'string',
   subjects: 'object',
   timestamp: 'number'
-    //systemTimestamp: 'number'
+  //systemTimestamp: 'number'
 };
 
 var optionalFields = {
