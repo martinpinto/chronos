@@ -52,14 +52,14 @@ function createEventFromData(data) {
 
     event.systemTimestamp = Date.now();
     event.id = uuid.v4();
-    
+
     // Throw error if event has unsupported field
     for (var field in data) {
       if (!requiredFields[field] && !optionalFields[field]) {
         throw Error('found unsupported key: ' + field);
       }
     }
-  
+
     // Make sure field values passed via data are all ov valid type
     for (var rkey in requiredFields) {
       if (typeof data[rkey] !== requiredFields[rkey]) {
