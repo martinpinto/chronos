@@ -1,6 +1,6 @@
 var acquire = require('acquire'),
-  uuid = require('node-uuid'),
-  subject = acquire('subject');
+  subject = acquire('subject'),
+  md5 = require('MD5');
 
 var requiredFields = {
   type: 'string',
@@ -51,7 +51,6 @@ function createEventFromData(data) {
       };
 
     event.systemTimestamp = Date.now();
-    event.id = uuid.v4();
 
     // Throw error if event has unsupported field
     for (var field in data) {
@@ -83,8 +82,12 @@ function createEventFromData(data) {
         event[okey] = data[okey];
       }
     }
+    // generate the id at the end, since we are now using parameters from the event to 
+    // create the hash
+    event.id = md5(event.id + event.type + event.timestamp + event.actor);
     return event;
   }
+
   // export the class
 module.exports.createEventFromData = createEventFromData;
 module.exports.Event = Event;
