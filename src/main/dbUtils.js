@@ -1,4 +1,4 @@
-/* exported getIndexForEvent, getFormattedEvents */
+/*exported getIndexForEvent, getFormattedEvents*/
 /*jshint unused: false */
 
 var sugar = require('sugar'),
@@ -22,15 +22,14 @@ var getIndexForEvent = function (event) {
 var getFormattedEvents = function (events) {
   var bulkEvents = [];
   for (var i in events) {
-    var event = events[i];
     bulkEvents.push({
-      index: {
-        _index: event.index,
-        _type: event.type,
-        _id: event.id
+      create: {
+        _index: events[i].index,
+        _type: events[i].type,
+        _id: events[i].id
       }
     });
-    bulkEvents.push(event);
+    bulkEvents.push(events[i]);
   }
   return bulkEvents;
 };

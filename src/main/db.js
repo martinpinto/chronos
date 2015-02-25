@@ -75,23 +75,32 @@ DB.prototype.addEvents = function (events, callback) {
     if (err) {
       callback(err);
     }
-
     // Write to DB
     self.esClient.bulk({
       body: dbUtils.getFormattedEvents(events)
     }, function (err, resp) {
-      var result = [];
+      var result = [],
+        failed = [];
       if (!err) {
         var items = resp.items;
         for (var i in items) {
-          result.push({
-            index: items[i].index._index,
-            type: items[i].index._type,
-            id: items[i].index._id
-          });
+          var item = {
+            index: items[i].create._index,
+            type: items[i].create._type,
+            id: items[i].create._id
+          };
+          if (!items[i].create.error) {
+            result.push(item);
+          } else {
+            item.error = items[i].create.error;
+            failed.push(item);
+          }
         }
       }
-      callback(err, result);
+      callback(err, {
+        accepted: result,
+        failed: failed
+      });
     });
   });
 };

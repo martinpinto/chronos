@@ -51,5 +51,5 @@ var event1 = event.createEventFromData(data1);
 var event2 = event.createEventFromData(data2);
 var event3 = event.createEventFromData(data3);
 
-assert.ok(event1.id == event2.id); // identical hash codes
-assert.ok(event1.id != event3.id); // different hash codes
+assert.ok(event1.id === event2.id); // identical hash codes
+assert.ok(event1.id !== event3.id); // different hash codes

@@ -14,16 +14,31 @@ Engine.prototype.init = function () {
 
 Engine.prototype.convertRawEvents = function (rawEvents) {
   var events = [];
+  var rejected = [];
   for (var i in rawEvents) {
-    events.push(event.createEventFromData(rawEvents[i]));
+    try {
+      events.push(event.createEventFromData(rawEvents[i]));
+    } catch (err) {
+      rejected.push({
+        event: rawEvents[i],
+        error: err.message
+      });
+    }
   }
-  return events;
+  return {
+    events: events,
+    rejected: rejected
+  };
 };
 
 Engine.prototype.add = function (rawEvents, callback) {
   var self = this,
     events = self.convertRawEvents(rawEvents);
-  self.db.addEvents(events, callback);
+
+  self.db.addEvents(events.events, function (err, res) {
+    res.rejected = events.rejected;
+    callback(res);
+  });
 };
 
 module.exports.Engine = Engine;

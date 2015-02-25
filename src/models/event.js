@@ -7,7 +7,6 @@ var requiredFields = {
   actor: 'string',
   subjects: 'object',
   timestamp: 'number'
-  //systemTimestamp: 'number'
 };
 
 var optionalFields = {
@@ -82,8 +81,13 @@ function createEventFromData(data) {
         event[okey] = data[okey];
       }
     }
-    // generate the id at the end, since we are now using parameters from the event to 
-    // create the hash
+
+    if (event.timestamp > event.systemTimestamp) {
+      throw Error('timestamp is future timestamp');
+    }
+  
+    // generate the id at the end, since we are now using parameters
+    // from the event to create the hash
     event.id = md5(event.id + event.type + event.timestamp + event.actor);
     return event;
   }
