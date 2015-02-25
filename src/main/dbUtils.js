@@ -16,7 +16,10 @@ var getIndexForEvent = function (event) {
   if (month < 10) {
     month = '0' + month;
   }
-  return year + '_' + month + '_' + day;
+  if (day < 10) {
+    day = '0' + day;
+  }
+  return 'cg_' + year + '_' + month + '_' + day;
 };
 
 var getFormattedEvents = function (events) {
