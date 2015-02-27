@@ -85,28 +85,20 @@ DB.prototype.addEvents = function (events, callback) {
     self.esClient.bulk({
       body: dbUtils.getFormattedEvents(events)
     }, function (err, resp) {
-      var result = [],
-        failed = [];
+      var result = [];
       if (!err) {
         var items = resp.items;
         for (var i in items) {
           var item = {
             index: items[i].create._index,
             type: items[i].create._type,
-            id: items[i].create._id
+            id: items[i].create._id,
+            error: items[i].create.error ? items[i].create.error : null
           };
-          if (!items[i].create.error) {
-            result.push(item);
-          } else {
-            item.error = items[i].create.error;
-            failed.push(item);
-          }
+          result.push(item);
         }
       }
-      callback(err, {
-        accepted: result,
-        failed: failed
-      });
+      callback(err, result);
     });
   });
 };

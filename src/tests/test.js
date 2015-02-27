@@ -47,7 +47,7 @@ var callback = function (response) {
   });
 
   response.on('end', function () {
-    console.log(str);
+    console.log(JSON.parse(str));
   });
 };
 

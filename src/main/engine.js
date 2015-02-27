@@ -18,11 +18,9 @@ Engine.prototype.convertRawEvents = function (rawEvents) {
   for (var i in rawEvents) {
     try {
       events.push(event.createEventFromData(rawEvents[i]));
+      rejected.push(null);
     } catch (err) {
-      rejected.push({
-        event: rawEvents[i],
-        error: err.message
-      });
+      rejected.push(err.message);
     }
   }
   return {
@@ -36,8 +34,23 @@ Engine.prototype.add = function (rawEvents, callback) {
     events = self.convertRawEvents(rawEvents);
 
   self.db.addEvents(events.events, function (err, res) {
-    res.rejected = events.rejected;
-    callback(res);
+    var eventPos = 0,
+      result = [];
+    for (var i in events.rejected) {
+      if (events.rejected[i]) {
+        result.push({
+          index: null,
+          type: null,
+          id: null,
+          error: events.rejected[i]
+        });
+      } else {
+        result.push(res[eventPos]);
+        eventPos++;
+      }
+    }
+
+    callback(result);
   });
 };
 
