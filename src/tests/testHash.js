@@ -41,7 +41,7 @@ var data3 = {
         text: 'Google Search',
         domain: 'google.com',
   }],
-    timestamp: Date.now() + 86400000,
+    timestamp: Date.now(),
     typeDomain: 'clickFromWebsite',
     origin: 'http://youtube.com',
     payload: []
