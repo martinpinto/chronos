@@ -39,65 +39,65 @@ Event.prototype.match = function (event) {
 };
 
 function createEventFromData(data) {
-    var event = new Event(),
-      createSubjects = function (subjects) {
-        var newSubjects = [];
-        for (var i in subjects) {
-          var subjData = subjects[i];
-          newSubjects.push(subject.createSubjectFromData(subjData));
-        }
-        return newSubjects;
-      };
-
-    event.systemTimestamp = Date.now();
-
-    // Throw error if event has unsupported field
-    for (var field in data) {
-      if (!requiredFields[field] && !optionalFields[field]) {
-        throw Error('found unsupported key: ' + field);
+  var event = new Event(),
+    createSubjects = function (subjects) {
+      var newSubjects = [];
+      for (var i in subjects) {
+        var subjData = subjects[i];
+        newSubjects.push(subject.createSubjectFromData(subjData));
       }
-    }
+      return newSubjects;
+    };
 
-    // Make sure field values passed via data are all ov valid type
-    for (var rkey in requiredFields) {
-      if (typeof data[rkey] !== requiredFields[rkey]) {
-        // TODO: Improve error message
-        throw Error('bad key: ' + rkey + ' ' + typeof data[rkey]);
-      } else {
-        event[rkey] = data[rkey];
-        if (rkey !== 'subjects') {
-          event[rkey] = data[rkey];
-        } else if (data.subjects.length === 0) {
-          throw Error('at least one subject per event needed');
-        } else {
-          event.subjects = createSubjects(data.subjects);
-        }
-      }
-    }
-    for (var okey in optionalFields) {
-      if (data[okey] && typeof data[okey] !== optionalFields[okey]) {
-        throw Error('bad key');
-      } else {
-        event[okey] = data[okey];
-      }
-    }
+  event.systemTimestamp = Date.now();
 
-    if (event.timestamp > event.systemTimestamp) {
-      throw Error('timestamp is future timestamp');
+  // Throw error if event has unsupported field
+  for (var field in data) {
+    if (!requiredFields[field] && !optionalFields[field]) {
+      throw Error('found unsupported key: ' + field);
     }
-
-    // generate the id at the end, since we are now using parameters
-    // from the event to create the hash
-    var idParamsStr = event.type + event.timestamp + event.actor;
-    for (var i in event.subjects) {
-      idParamsStr += event.subjects[i].id;
-    }
-
-    event.id = md5(idParamsStr);
-    return event;
   }
 
-  // export the class
+  // Make sure field values passed via data are all ov valid type
+  for (var rkey in requiredFields) {
+    if (typeof data[rkey] !== requiredFields[rkey]) {
+      // TODO: Improve error message
+      throw Error('bad key: ' + rkey + ' ' + typeof data[rkey]);
+    } else {
+      event[rkey] = data[rkey];
+      if (rkey !== 'subjects') {
+        event[rkey] = data[rkey];
+      } else if (data.subjects.length === 0) {
+        throw Error('at least one subject per event needed');
+      } else {
+        event.subjects = createSubjects(data.subjects);
+      }
+    }
+  }
+  for (var okey in optionalFields) {
+    if (data[okey] && typeof data[okey] !== optionalFields[okey]) {
+      throw Error('bad key');
+    } else {
+      event[okey] = data[okey];
+    }
+  }
+
+  if (event.timestamp > event.systemTimestamp) {
+    throw Error('timestamp is future timestamp');
+  }
+
+  // generate the id at the end, since we are now using parameters
+  // from the event to create the hash
+  var idParamsStr = event.type + event.timestamp + event.actor;
+  for (var i in event.subjects) {
+    idParamsStr += event.subjects[i].id;
+  }
+
+  event.id = md5(idParamsStr);
+  return event;
+}
+
+// export the class
 module.exports.createEventFromData = createEventFromData;
 module.exports.Event = Event;
 module.exports.requiredFields = requiredFields;
