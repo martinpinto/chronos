@@ -4,8 +4,8 @@
 var sugar = require('sugar'),
   acquire = require('acquire'),
   subject = acquire('subject'),
-  event = acquire('event');
-
+  event = acquire('event'),
+  config = require('config');
 
 var getIndexForEvent = function (event) {
   var date = Date.create(event.timestamp),
@@ -28,7 +28,7 @@ var getFormattedEvents = function (events) {
     bulkEvents.push({
       create: {
         _index: events[i].index,
-        _type: events[i].type,
+        _type: events[i][config.get('engine.dbConfig.typeField')],
         _id: events[i].id
       }
     });
