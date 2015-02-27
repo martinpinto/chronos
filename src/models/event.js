@@ -85,10 +85,15 @@ function createEventFromData(data) {
     if (event.timestamp > event.systemTimestamp) {
       throw Error('timestamp is future timestamp');
     }
-  
+
     // generate the id at the end, since we are now using parameters
     // from the event to create the hash
-    event.id = md5(event.id + event.type + event.timestamp + event.actor);
+    var idParamsStr = event.type + event.timestamp + event.actor;
+    for (var i in event.subjects) {
+      idParamsStr += event.subjects[i].id;
+    }
+
+    event.id = md5(idParamsStr);
     return event;
   }
 
