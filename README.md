@@ -1,4 +1,4 @@
-# Chronogeist
+# Chronos
 
 A structured semantic Event and Activity Log on top of ElasticSearch (ES). Communication is via RESTful API.
 To sum it up. This will take care of your ES index creation, sharding and document insertion. For now we support only the add operation.
@@ -16,10 +16,10 @@ These are the fields required for Events to be inserted and also the fields that
 | id              | string    | x        |          |
 | systemTimestamp | number    | x        |          |
 | timestamp       | number    |          |          |
-| type            | string    |          |          |
+| interpretation  | string    |          |          |
 | actor           | string    |          |          |
 | subjects        | object    |          |          |
-| typeDomain      | string    |          | x        |
+| manifestation   | string    |          | x        |
 | origin          | string    |          | x        |
 | payload         | object    |          | x        |
 
@@ -29,11 +29,12 @@ Note: subjects is a list of subject JSONs as described below
 
 These are the fields required for subjects to be inserted and also the fields that will be stored into the DB
 
-| property   | data type | readonly | optional |
-|------------|-----------|----------|----------|
-| id         | string    | x        |          |
-| type       | string    |          |          |
-| text       | string    |          |          |
-| typeDomain | string    |          | x        |
-| origin     | string    |          | x        |
-| mimetype   | string    |          | x        |
+| property       | data type | readonly | optional |
+|----------------|-----------|----------|----------|
+| id             | string    | x        |          |
+| interpretation | string    |          |          |
+| text           | string    |          |          |
+| manifestation  | string    |          | x        |
+| origin         | string    |          | x        |
+| mimetype       | string    |          | x        |
+| currentId      | string    |          | x        |
