@@ -1,31 +1,31 @@
 var http = require('http');
 
 var data1 = {
-  type: 'click',
+  interpretation: 'click',
   actor: 'user1',
   subjects: [{
     id: 'http://yahoo.com',
-    type: 'website',
+    interpretation: 'website',
     text: 'Yahoo!',
-    domain: 'yahoo.com'
+    manifestation: 'yahoo.com'
   }],
   timestamp: Date.now(),
-  typeDomain: 'clickFromWebsite',
+  manifestation: 'clickFromWebsite',
   origin: 'http://yahoo.com',
   payload: []
 };
 
 var data2 = {
-  type: 'click',
+  interpretation: 'click',
   actor: 'user1',
   subjects: [{
     id: 'http://google.com',
-    type: 'website',
+    interpretation: 'website',
     text: 'Google Search',
-    domain: 'google.com',
+    manifestation: 'google.com',
   }],
   timestamp: Date.now() + 86400000,
-  typeDomain: 'clickFromWebsite',
+  manifestation: 'clickFromWebsite',
   origin: 'http://youtube.com',
   payload: []
 };

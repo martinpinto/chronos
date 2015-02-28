@@ -36,6 +36,11 @@ Engine.prototype.add = function (rawEvents, callback) {
   self.db.addEvents(events.events, function (err, res) {
     var eventPos = 0,
       result = [];
+
+    if (err) {
+      return callback(err, null);
+    }
+
     for (var i in events.rejected) {
       if (events.rejected[i]) {
         result.push({
@@ -50,7 +55,7 @@ Engine.prototype.add = function (rawEvents, callback) {
       }
     }
 
-    callback(result);
+    callback(null, result);
   });
 };
 

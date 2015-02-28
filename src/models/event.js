@@ -3,22 +3,22 @@ var acquire = require('acquire'),
   md5 = require('MD5');
 
 var requiredFields = {
-  type: 'string',
-  actor: 'string',
+  timestamp: 'number',
+  interpretation: 'string',
+  actor: 'string', //origin
   subjects: 'object',
-  timestamp: 'number'
 };
 
 var optionalFields = {
-  typeDomain: 'string',
+  manifestation: 'string', //trigger
   origin: 'string',
   payload: 'object'
 };
 
 function Event() {
   this.id = null; // string (not null)
-  this.type = null; // string (not null)
-  this.typeDomain = null; // string (not null)
+  this.interpretation = null; // string (not null)
+  this.manifestation = null; // string (not null)
   this.actor = null; // string (not null)
   this.origin = null; // string (not null)
   this.payload = null; // object (not null)
@@ -88,7 +88,7 @@ function createEventFromData(data) {
 
   // generate the id at the end, since we are now using parameters
   // from the event to create the hash
-  var idParamsStr = event.type + event.timestamp + event.actor;
+  var idParamsStr = event.timestamp + event.interpretation + event.manifestation + event.actor;
   for (var i in event.subjects) {
     idParamsStr += event.subjects[i].id;
   }

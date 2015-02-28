@@ -1,14 +1,15 @@
 var requiredFields = {
   id: 'string',
-  type: 'string',
+  interpretation: 'string',
   text: 'string',
-  domain: 'string'
 };
 
 var optionalFields = {
-  typeDomain: 'string',
+  manifestation: 'string',
   origin: 'string',
-  mimeType: 'string'
+  mimeType: 'string',
+  storage: 'string',
+  currentId: 'string'
 };
 
 function createSubjectFromData(data) {
@@ -42,12 +43,14 @@ function createSubjectFromData(data) {
 
 function Subject(data) {
   this.id = null; // string (not null)
-  this.type = null; // string (not null)
+  this.interpretation = null; // string (not null)
   this.text = null; // string (not null)
   this.domain = null; // string (not null)
-  this.typeDomain = null; // string (not null)
+  this.manifestation = null; // string (not null)
   this.origin = null; // string (not null)
   this.mimeType = null; // string (not null)
+  this.storage = null; // string (not null)
+  this.currentUri = null; // string (not null)
   this.init(data);
 }
 
