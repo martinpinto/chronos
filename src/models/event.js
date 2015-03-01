@@ -1,6 +1,7 @@
 var acquire = require('acquire'),
   subject = acquire('subject'),
-  md5 = require('MD5');
+  md5 = require('MD5'),
+  sugar = require('sugar');
 
 var requiredFields = {
   timestamp: 'number',
@@ -14,6 +15,9 @@ var optionalFields = {
   origin: 'string',
   payload: 'object'
 };
+
+var fields = Object.merge({}, requiredFields);
+fields = Object.merge(fields, optionalFields);
 
 function Event() {
   this.id = null; // string (not null)
@@ -31,16 +35,70 @@ function Event() {
 // class methods
 Event.prototype.init = function () {};
 
-Event.prototype.match = function (event) {
-  if (!event) {
+
+/**
+Return True if this event matches *event_template*. The
+matching is done where unset fields in the template is
+interpreted as wild cards. Interpretations and manifestations
+are also matched if they are children of the types specified
+in `event_template`. If the template has more than one
+subject, this event matches if at least one of the subjects
+on this event matches any single one of the subjects on the
+template.
+
+Basically this method mimics the matching behaviour
+found in the :meth:`FindEventIds` method on the Zeitgeist engine.
+*/
+Event.prototype.matchesTemplate = function (eventTemplate) {
+  var self = this;
+  if (!eventTemplate) {
+    return false;
+  }
+
+  // We use direct member access to speed things up a bit
+  // First match the raw event data
+  for (var field in fields) {
+    // We don't match timestamps and subject will be treated seperatly
+    if (field === 'id' || field === 'timestamp' || field === 'subjects') {
+      continue;
+    }
+    if (eventTemplate[field] && eventTemplate[field] !== self[field]) {
+      return false;
+    }
+  }
+
+  // If eventTemplate has no subjects we have a match
+  if (!eventTemplate.subjects || eventTemplate.subjects.length === 0) {
     return true;
   }
-  return true;
+
+  // Now we check the subjects
+  for (var i in eventTemplate.subjects) {
+    var tsubj = eventTemplate.subjects[i];
+    for (var j in self.subjects) {
+      var subj = self.subjects[j];
+      if (!subj.matchesTemplate(tsubj)) {
+        continue;
+      }
+      // We have a matching subject, all good!
+      return true;
+    }
+  }
+
+  // Template has subjects, but we never found a match
+  return false;
 };
+
 
 function createEventFromData(data) {
   var event = new Event(),
     createSubjects = function (subjects) {
+      if (subjects instanceof Array === false) {
+        throw Error('subjects should be a list');
+      }
+      if (subjects.length === 0) {
+        throw Error('at least one subject is required');
+      }
       var newSubjects = [];
       for (var i in subjects) {
         var subjData = subjects[i];
@@ -88,7 +146,8 @@ function createEventFromData(data) {
 
   // generate the id at the end, since we are now using parameters
   // from the event to create the hash
-  var idParamsStr = event.timestamp + event.interpretation + event.manifestation + event.actor;
+  var idParamsStr = event.timestamp + event.interpretation +
+    event.manifestation + event.actor;
   for (var i in event.subjects) {
     idParamsStr += event.subjects[i].id;
   }

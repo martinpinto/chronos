@@ -1,3 +1,5 @@
+var sugar = require('sugar');
+
 var requiredFields = {
   id: 'string',
   interpretation: 'string',
@@ -11,6 +13,9 @@ var optionalFields = {
   storage: 'string',
   currentId: 'string'
 };
+
+var fields = Object.merge({}, requiredFields);
+fields = Object.merge(fields, optionalFields);
 
 function createSubjectFromData(data) {
   var subj = new Subject();
@@ -56,6 +61,31 @@ function Subject(data) {
 
 // class methods
 Subject.prototype.init = function () {};
+
+/**
+Return True if this Subject matches *subject_template*. Empty
+fields in the template are treated as wildcards.
+Interpretations and manifestations are also matched if they are
+children of the types specified in `subject_template`.
+See also :meth:`Event.matches_template`
+*/
+Subject.prototype.matchesTemplate = function (subjectTemplate) {
+  var self = this;
+  for (var field in fields) {
+    if (!subjectTemplate[field]) {
+      continue;
+    }
+    if (field === 'storage') {
+      throw Error('chronos does not support searching by "storage" field');
+    } else {
+      if (self[field] !== subjectTemplate[field]) {
+        return false;
+      }
+    }
+  }
+  return true;
+};
+
 
 // export the class
 module.exports.createSubjectFromData = createSubjectFromData;

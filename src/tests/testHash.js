@@ -52,4 +52,21 @@ describe('Event', function () {
       assert.ok(event1.id !== event4.id); // different hash codes
     });
   });
+
+  describe('#matchesTemplate()', function () {
+    it('Match events', function () {
+
+      var event1 = event.createEventFromData(data1);
+      var event2 = event.createEventFromData(data1);
+      var template1 = {
+        interpretation: 'click',
+        subjects: [{
+          id: event1.subjects[0].id
+        },]
+      };
+
+      assert.ok(event1.matchesTemplate(template1));
+      assert.ok(event1.matchesTemplate(event2));
+    });
+  });
 });
