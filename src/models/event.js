@@ -1,3 +1,5 @@
+/* exported sugar */
+
 var acquire = require('acquire'),
   subject = acquire('subject'),
   md5 = require('MD5'),
@@ -34,7 +36,6 @@ var Event = function () {
 
 // class methods
 Event.prototype.init = function () {};
-
 
 /**
 Return True if this event matches *event_template*. The
@@ -158,12 +159,11 @@ function createEventFromData(data) {
   return event;
 }
 
-
-var validateTemplate = function (template) {
+function validateTemplate(template) {
   // Throw error if event has unsupported field
   for (var tfield in template) {
     if (!requiredFields[tfield] && !optionalFields[tfield]) {
-      throw Error('found unsupported key: ' + field);
+      throw Error('found unsupported key: ' + tfield);
     }
     if (tfield === 'timestamp' || tfield === 'id') {
       throw Error('event templates do not support field: ' + tfield);
@@ -188,7 +188,7 @@ var validateTemplate = function (template) {
   for (var i in template.subjects) {
     subject.validateTemplate(template.subjects[i]);
   }
-};
+}
 
 // export the class
 module.exports.createEventFromData = createEventFromData;
