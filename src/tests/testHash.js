@@ -1,47 +1,55 @@
-var acquire = require('acquire');
-var event = acquire('event');
-var assert = require('assert');
+/*global describe, it*/
+
+var acquire = require('acquire'),
+  event = acquire('event'),
+  assert = require('assert');
 
 var data1 = {
-  type: 'click',
+  interpretation: 'click',
   actor: 'user1',
   subjects: [{
     id: 'http://yahoo.com',
-    type: 'website',
+    interpretation: 'website',
     text: 'Yahoo!',
-    domain: 'yahoo.com'
+    origin: 'yahoo.com'
   }],
   timestamp: 0,
-  typeDomain: 'clickFromWebsite',
+  manifestation: 'clickFromWebsite',
   origin: 'http://yahoo.com',
   payload: []
 };
 
 
 var data2 = {
-  type: 'click',
+  interpretation: 'click',
   actor: 'user1',
   subjects: [{
     id: 'http://google.com',
-    type: 'website',
+    interpretation: 'website',
     text: 'Google Search',
-    domain: 'google.com',
+    origin: 'google.com',
   }],
   timestamp: Date.now(),
-  typeDomain: 'clickFromWebsite',
+  manifestation: 'clickFromWebsite',
   origin: 'http://youtube.com',
   payload: []
 };
 
 
-var event1 = event.createEventFromData(data1);
-var event2 = event.createEventFromData(data1);
-var event3 = event.createEventFromData(data2);
+describe('Event', function () {
+  describe('#createEventFromData()', function () {
+    it('Event ids generated based on property keys', function () {
 
-data1.subjects[0].id = 'http://facebook.com';
+      var event1 = event.createEventFromData(data1);
+      var event2 = event.createEventFromData(data1);
+      var event3 = event.createEventFromData(data2);
 
-var event4 = event.createEventFromData(data1);
+      assert.ok(event1.id === event2.id); // identical hash codes
+      assert.ok(event1.id !== event3.id); // different hash codes
+      data1.subjects[0].id = 'http://facebook.com';
 
-assert.ok(event1.id === event2.id); // identical hash codes
-assert.ok(event1.id !== event3.id); // different hash codes
-assert.ok(event1.id !== event4.id); // different hash codes
+      var event4 = event.createEventFromData(data1);
+      assert.ok(event1.id !== event4.id); // different hash codes
+    });
+  });
+});

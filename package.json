@@ -10,7 +10,8 @@
     "seq": "x.x.x",
     "assert": "x.x.x",
     "MD5": "x.x.x",
-    "config": "x.x.x"
+    "config": "x.x.x",
+    "mocha": "x.x.x"
   },
   "engines": {
     "node": "x.x.x",
