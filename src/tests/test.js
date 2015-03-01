@@ -33,7 +33,7 @@ var data2 = {
 //The url we want is `www.nodejitsu.com:1337/`
 var options = {
   host: 'localhost',
-  path: '/add',
+  path: '/insert_events',
   //since we are listening on a custom port, we need to specify it by hand
   port: '8000',
   //This is what changes the request to a POST request

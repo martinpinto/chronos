@@ -29,11 +29,11 @@ Engine.prototype.convertRawEvents = function (rawEvents) {
   };
 };
 
-Engine.prototype.add = function (rawEvents, callback) {
+Engine.prototype.insertEvents = function (rawEvents, callback) {
   var self = this,
     events = self.convertRawEvents(rawEvents);
 
-  self.db.addEvents(events.events, function (err, res) {
+  self.db.insertEvents(events.events, function (err, res) {
     var eventPos = 0,
       result = [];
 

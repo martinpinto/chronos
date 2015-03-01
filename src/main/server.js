@@ -21,9 +21,9 @@ Server.prototype.init = function () {
   // Add the route
   self.server.route({
     method: 'POST',
-    path: '/add',
+    path: '/insert_events',
     handler: function (request, reply) {
-      self.engine.add(request.payload, function (err, res) {
+      self.engine.insertEvents(request.payload, function (err, res) {
         if (err) {
           return reply(JSON.stringify(err), null).code(500);
         } else {

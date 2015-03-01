@@ -68,7 +68,7 @@ DB.prototype.createIndices = function (events, callback) {
   }
 };
 
-DB.prototype.addEvents = function (events, callback) {
+DB.prototype.insertEvents = function (events, callback) {
   var self = this;
 
   // Assign proper indices toe the events
