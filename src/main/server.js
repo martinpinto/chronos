@@ -18,12 +18,12 @@ Server.prototype.init = function () {
     port: 8000
   });
 
-  // Add the route
+  // Add insert_events
   self.server.route({
     method: 'POST',
     path: '/insert_events',
     handler: function (request, reply) {
-      self.engine.insertEvents(request.payload, function (err, res) {
+      self.engine.insertEvents(request.payload.events, function (err, res) {
         if (err) {
           return reply(JSON.stringify(err), null).code(500);
         } else {
