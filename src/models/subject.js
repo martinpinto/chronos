@@ -46,7 +46,7 @@ function createSubjectFromData(data) {
   return subj;
 }
 
-function Subject(data) {
+var Subject = function (data) {
   this.id = null; // string (not null)
   this.interpretation = null; // string (not null)
   this.text = null; // string (not null)
@@ -57,7 +57,7 @@ function Subject(data) {
   this.storage = null; // string (not null)
   this.currentUri = null; // string (not null)
   this.init(data);
-}
+};
 
 // class methods
 Subject.prototype.init = function () {};
@@ -86,9 +86,24 @@ Subject.prototype.matchesTemplate = function (subjectTemplate) {
   return true;
 };
 
+var validateTemplate = function (template) {
+  for (var tfield in template) {
+    if (!requiredFields[tfield] && !optionalFields[tfield]) {
+      throw Error('found unsupported key: ' + field);
+    }
+  }
+  for (var field in fields) {
+    if (template[field] !== undefined &&
+      template[field] !== null &&
+      typeof template[field] !== fields[field]) {
+      throw Error('bad key: ' + field + ' ' + typeof template[field]);
+    }
+  }
+};
 
 // export the class
 module.exports.createSubjectFromData = createSubjectFromData;
 module.exports.Subject = Subject;
 module.exports.requiredFields = requiredFields;
 module.exports.optionalFields = optionalFields;
+module.exports.validateTemplate = validateTemplate;

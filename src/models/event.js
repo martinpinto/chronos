@@ -19,7 +19,7 @@ var optionalFields = {
 var fields = Object.merge({}, requiredFields);
 fields = Object.merge(fields, optionalFields);
 
-function Event() {
+var Event = function () {
   this.id = null; // string (not null)
   this.interpretation = null; // string (not null)
   this.manifestation = null; // string (not null)
@@ -30,7 +30,7 @@ function Event() {
   this.timestamp = null; // int (not null)
   this.systemTimestamp = null; // int (not null)
   this.init();
-}
+};
 
 // class methods
 Event.prototype.init = function () {};
@@ -54,6 +54,8 @@ Event.prototype.matchesTemplate = function (eventTemplate) {
   if (!eventTemplate) {
     return false;
   }
+
+  validateTemplate(eventTemplate);
 
   // We use direct member access to speed things up a bit
   // First match the raw event data
@@ -156,8 +158,41 @@ function createEventFromData(data) {
   return event;
 }
 
+
+var validateTemplate = function (template) {
+  // Throw error if event has unsupported field
+  for (var tfield in template) {
+    if (!requiredFields[tfield] && !optionalFields[tfield]) {
+      throw Error('found unsupported key: ' + field);
+    }
+    if (tfield === 'timestamp' || tfield === 'id') {
+      throw Error('event templates do not support field: ' + tfield);
+    }
+  }
+  for (var field in fields) {
+    if (field === 'subjects') {
+      continue;
+    }
+    if (template[field] !== undefined &&
+      template[field] !== null &&
+      typeof template[field] !== fields[field]) {
+      throw Error('bad key: ' + field + ' ' + typeof template[field]);
+    }
+  }
+
+  // We have no subjects so template is valid
+  if (template.subjects === null || template.subjects.length === 0) {
+    return;
+  }
+
+  for (var i in template.subjects) {
+    subject.validateTemplate(template.subjects[i]);
+  }
+};
+
 // export the class
 module.exports.createEventFromData = createEventFromData;
 module.exports.Event = Event;
 module.exports.requiredFields = requiredFields;
 module.exports.optionalFields = optionalFields;
+module.exports.validateTemplate = validateTemplate;

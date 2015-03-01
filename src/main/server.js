@@ -32,6 +32,33 @@ Server.prototype.init = function () {
       });
     }
   });
+
+  // Add find_event_ids route
+  self.server.route({
+    method: 'POST',
+    path: '/find_event_ids',
+    handler: function (request, reply) {
+
+      var eventTemplates = request.payload.eventTemplates,
+        timerange = request.payload.timerange,
+        storageState = request.payload.storageState,
+        numEvents = request.payload.numEvents,
+        resultType = request.payload.resultType;
+
+      self.engine.findEventIds(eventTemplates,
+        timerange,
+        storageState,
+        numEvents,
+        resultType,
+        function (err, res) {
+          if (err) {
+            return reply(JSON.stringify(err), null).code(500);
+          } else {
+            return reply(res);
+          }
+        });
+    }
+  });
 };
 
 Server.prototype.start = function () {

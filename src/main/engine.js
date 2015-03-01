@@ -59,4 +59,15 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
   });
 };
 
+
+Engine.prototype.findEventIds = function (eventTemplates,
+  timerange,
+  storageState,
+  numEvents,
+  resultType,
+  callback) {
+  var self = this,
+    events = self.convertRawEvents(eventTemplates);
+};
+
 module.exports.Engine = Engine;

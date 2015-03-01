@@ -53,6 +53,24 @@ describe('Event', function () {
     });
   });
 
+  describe('#validateTemplate()', function () {
+    it('Event template is valid', function () {
+      var edata = Object.merge({}, data1);
+      delete edata.timestamp;
+      event.validateTemplate(edata);
+    });
+    it('Event template is invalid', function () {
+      var tdata = {
+        subjects: [{
+          invalidField: 'website'
+        }]
+      };
+      try {
+        event.validateTemplate(tdata);
+      } catch (err) {}
+    });
+  });
+
   describe('#matchesTemplate()', function () {
     it('Match events', function () {
 
@@ -62,7 +80,7 @@ describe('Event', function () {
         interpretation: 'click',
         subjects: [{
           id: event1.subjects[0].id
-        },]
+        }, ]
       };
 
       assert.ok(event1.matchesTemplate(template1));
