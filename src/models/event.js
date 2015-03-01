@@ -18,80 +18,7 @@ var optionalFields = {
   payload: 'object'
 };
 
-var fields = Object.merge({}, requiredFields);
-fields = Object.merge(fields, optionalFields);
-
-var Event = function () {
-  this.id = null; // string (not null)
-  this.interpretation = null; // string (not null)
-  this.manifestation = null; // string (not null)
-  this.actor = null; // string (not null)
-  this.origin = null; // string (not null)
-  this.payload = null; // object (not null)
-  this.subjects = []; // list (not null)
-  this.timestamp = null; // int (not null)
-  this.systemTimestamp = null; // int (not null)
-  this.init();
-};
-
-// class methods
-Event.prototype.init = function () {};
-
-/**
-Return True if this event matches *event_template*. The
-matching is done where unset fields in the template is
-interpreted as wild cards. Interpretations and manifestations
-are also matched if they are children of the types specified
-in `event_template`. If the template has more than one
-subject, this event matches if at least one of the subjects
-on this event matches any single one of the subjects on the
-template.
-
-Basically this method mimics the matching behaviour
-found in the :meth:`FindEventIds` method on the Zeitgeist engine.
-*/
-Event.prototype.matchesTemplate = function (eventTemplate) {
-  var self = this;
-  if (!eventTemplate) {
-    return false;
-  }
-
-  validateTemplate(eventTemplate);
-
-  // We use direct member access to speed things up a bit
-  // First match the raw event data
-  for (var field in fields) {
-    // We don't match timestamps and subject will be treated seperatly
-    if (field === 'id' || field === 'timestamp' || field === 'subjects') {
-      continue;
-    }
-    if (eventTemplate[field] && eventTemplate[field] !== self[field]) {
-      return false;
-    }
-  }
-
-  // If eventTemplate has no subjects we have a match
-  if (!eventTemplate.subjects || eventTemplate.subjects.length === 0) {
-    return true;
-  }
-
-  // Now we check the subjects
-  for (var i in eventTemplate.subjects) {
-    var tsubj = eventTemplate.subjects[i];
-    for (var j in self.subjects) {
-      var subj = self.subjects[j];
-      if (!subj.matchesTemplate(tsubj)) {
-        continue;
-      }
-      // We have a matching subject, all good!
-      return true;
-    }
-  }
-
-  // Template has subjects, but we never found a match
-  return false;
-};
-
+var fields = Object.merge(Object.merge({}, requiredFields), optionalFields);
 
 function createEventFromData(data) {
   var event = new Event(),
@@ -189,6 +116,77 @@ function validateTemplate(template) {
     subject.validateTemplate(template.subjects[i]);
   }
 }
+
+var Event = function () {
+  this.id = null; // string (not null)
+  this.interpretation = null; // string (not null)
+  this.manifestation = null; // string (not null)
+  this.actor = null; // string (not null)
+  this.origin = null; // string (not null)
+  this.payload = null; // object (not null)
+  this.subjects = []; // list (not null)
+  this.timestamp = null; // int (not null)
+  this.systemTimestamp = null; // int (not null)
+  this.init();
+};
+
+// class methods
+Event.prototype.init = function () {};
+
+/**
+Return True if this event matches *event_template*. The
+matching is done where unset fields in the template is
+interpreted as wild cards. Interpretations and manifestations
+are also matched if they are children of the types specified
+in `event_template`. If the template has more than one
+subject, this event matches if at least one of the subjects
+on this event matches any single one of the subjects on the
+template.
+
+Basically this method mimics the matching behaviour
+found in the :meth:`FindEventIds` method on the Zeitgeist engine.
+*/
+Event.prototype.matchesTemplate = function (eventTemplate) {
+  var self = this;
+  if (!eventTemplate) {
+    return false;
+  }
+
+  validateTemplate(eventTemplate);
+
+  // We use direct member access to speed things up a bit
+  // First match the raw event data
+  for (var field in fields) {
+    // We don't match timestamps and subject will be treated seperatly
+    if (field === 'id' || field === 'timestamp' || field === 'subjects') {
+      continue;
+    }
+    if (eventTemplate[field] && eventTemplate[field] !== self[field]) {
+      return false;
+    }
+  }
+
+  // If eventTemplate has no subjects we have a match
+  if (!eventTemplate.subjects || eventTemplate.subjects.length === 0) {
+    return true;
+  }
+
+  // Now we check the subjects
+  for (var i in eventTemplate.subjects) {
+    var tsubj = eventTemplate.subjects[i];
+    for (var j in self.subjects) {
+      var subj = self.subjects[j];
+      if (!subj.matchesTemplate(tsubj)) {
+        continue;
+      }
+      // We have a matching subject, all good!
+      return true;
+    }
+  }
+
+  // Template has subjects, but we never found a match
+  return false;
+};
 
 // export the class
 module.exports.createEventFromData = createEventFromData;

@@ -1,10 +1,11 @@
+/* exported sugar */
+
 var elasticsearch = require('elasticsearch'),
   acquire = require('acquire'),
   dbUtils = acquire('dbUtils'),
   sugar = require('sugar'),
   Seq = require('seq'),
   config = require('config');
-
 
 function DB() {
   this.esClient = null;

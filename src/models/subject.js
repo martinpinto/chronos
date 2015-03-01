@@ -1,3 +1,5 @@
+/* exported sugar */
+
 var sugar = require('sugar');
 
 var requiredFields = {
@@ -14,8 +16,7 @@ var optionalFields = {
   currentId: 'string'
 };
 
-var fields = Object.merge({}, requiredFields);
-fields = Object.merge(fields, optionalFields);
+var fields = Object.merge(Object.merge({}, requiredFields), optionalFields);
 
 function createSubjectFromData(data) {
   var subj = new Subject();
@@ -44,6 +45,21 @@ function createSubjectFromData(data) {
     }
   }
   return subj;
+}
+
+function validateTemplate(template) {
+  for (var tfield in template) {
+    if (!requiredFields[tfield] && !optionalFields[tfield]) {
+      throw Error('found unsupported key: ' + field);
+    }
+  }
+  for (var field in fields) {
+    if (template[field] !== undefined &&
+      template[field] !== null &&
+      typeof template[field] !== fields[field]) {
+      throw Error('bad key: ' + field + ' ' + typeof template[field]);
+    }
+  }
 }
 
 var Subject = function (data) {
@@ -84,21 +100,6 @@ Subject.prototype.matchesTemplate = function (subjectTemplate) {
     }
   }
   return true;
-};
-
-var validateTemplate = function (template) {
-  for (var tfield in template) {
-    if (!requiredFields[tfield] && !optionalFields[tfield]) {
-      throw Error('found unsupported key: ' + field);
-    }
-  }
-  for (var field in fields) {
-    if (template[field] !== undefined &&
-      template[field] !== null &&
-      typeof template[field] !== fields[field]) {
-      throw Error('bad key: ' + field + ' ' + typeof template[field]);
-    }
-  }
 };
 
 // export the class
