@@ -40,21 +40,55 @@ var options = {
   method: 'POST'
 };
 
-var callback = function (response) {
+
+var options2 = {
+  host: 'localhost',
+  path: '/find_events',
+  //since we are listening on a custom port, we need to specify it by hand
+  port: '8000',
+  //This is what changes the request to a POST request
+  method: 'POST'
+};
+
+
+var printResponse = function (response, callback) {
   var str = '';
   response.on('data', function (chunk) {
     str += chunk;
   });
 
   response.on('end', function () {
-    console.log(JSON.parse(str));
+    var res = JSON.parse(str);
+    console.log(res);
+    console.log(res.length);
+    callback();
   });
 };
 
-var req = http.request(options, callback);
+var req = http.request(options, function (response) {
+  printResponse(response, function () {
+    var req2 = http.request(options2, function (response) {
+      printResponse(response, function () {});
+    });
+    var reqParams = {
+      templates: [{
+          interpretation: 'click',
+          manifestation: 'clickFromWebsite'
+        },
+        {}],
+      timerange: {
+        from: 1425260097819
+      },
+      count: 200
+    };
+    req2.write(JSON.stringify(reqParams));
+    req2.end();
+  });
+});
 //This is the data we are posting, it needs to be a string or a buffer
 
-var reqParams = {events: [data1, data2, data1]};
-
+var reqParams = {
+  events: [data1, data2, data1]
+};
 req.write(JSON.stringify(reqParams));
 req.end();

@@ -36,20 +36,15 @@ Server.prototype.init = function () {
   // Add find_event_ids route
   self.server.route({
     method: 'POST',
-    path: '/find_event_ids',
+    path: '/find_events',
     handler: function (request, reply) {
-
-      var eventTemplates = request.payload.eventTemplates,
+      var eventTemplates = request.payload.templates,
         timerange = request.payload.timerange,
-        storageState = request.payload.storageState,
-        numEvents = request.payload.numEvents,
-        resultType = request.payload.resultType;
+        numEvents = request.payload.count;
 
-      self.engine.findEventIds(eventTemplates,
+      self.engine.findEvents(eventTemplates,
         timerange,
-        storageState,
         numEvents,
-        resultType,
         function (err, res) {
           if (err) {
             return reply(JSON.stringify(err), null).code(500);

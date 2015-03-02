@@ -66,12 +66,12 @@ var Subject = function (data) {
   this.id = null; // string (not null)
   this.interpretation = null; // string (not null)
   this.text = null; // string (not null)
-  this.domain = null; // string (not null)
+  this.interpretation = null; // string (not null)
   this.manifestation = null; // string (not null)
   this.origin = null; // string (not null)
   this.mimeType = null; // string (not null)
   this.storage = null; // string (not null)
-  this.currentUri = null; // string (not null)
+  this.currentId = null; // string (not null)
   this.init(data);
 };
 
@@ -108,3 +108,4 @@ module.exports.Subject = Subject;
 module.exports.requiredFields = requiredFields;
 module.exports.optionalFields = optionalFields;
 module.exports.validateTemplate = validateTemplate;
+module.exports.fields = fields;

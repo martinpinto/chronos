@@ -32,6 +32,7 @@ var getFormattedEvents = function (events) {
         _id: events[i].id
       }
     });
+    delete events[i].index;
     bulkEvents.push(events[i]);
   }
   return bulkEvents;

@@ -1,11 +1,13 @@
 /* exported sugar */
+/*jshint -W106*/
 
 var elasticsearch = require('elasticsearch'),
   acquire = require('acquire'),
   dbUtils = acquire('dbUtils'),
   sugar = require('sugar'),
   Seq = require('seq'),
-  config = require('config');
+  config = require('config'),
+  event = acquire('event');
 
 function DB() {
   this.esClient = null;
@@ -101,6 +103,91 @@ DB.prototype.insertEvents = function (events, callback) {
       }
       callback(err, result);
     });
+  });
+};
+
+DB.prototype.findEvents = function (eventTemplates,
+  timerange,
+  numEvents,
+  callback) {
+  var self = this;
+
+  var termFilter = {
+    or: eventTemplates.map(function (template) {
+      var and = {
+        and: []
+      };
+      if (Object.keys(template).length === 0) {
+        and.and.push({
+          match_all: {}
+        });
+        return and;
+      }
+      for (var field in template) {
+        var term = {
+          term: {}
+        };
+        term.term[field] = template[field];
+        and.and.push(term);
+      }
+      return and;
+    })
+  };
+
+  var timeFilter = {
+    range: {
+      timestamp: {
+        gte: timerange.from,
+        lt: timerange.to
+      }
+    }
+  };
+
+  var queryBody = {
+    query: {
+      filtered: {
+        filter: {
+          and: [termFilter, timeFilter]
+        }
+      }
+    }
+  };
+
+  var esEvents = [];
+  self.esClient.search({
+    // Set to 30 seconds because we are calling right back
+    scroll: '30s',
+    size: 100,
+    body: queryBody
+  }, function getMoreUntilDone(error, response) {
+    if (error) {
+      return callback(error);
+    }
+    // collect the title from each response
+    response.hits.hits.forEach(function (hit) {
+      esEvents.push(hit);
+    });
+
+    if (numEvents > esEvents.length &&
+      response.hits.total !== esEvents.length) {
+      // now we can call scroll over and over
+      self.esClient.scroll({
+        scrollId: response._scroll_id,
+        scroll: '30s'
+      }, getMoreUntilDone);
+    } else {
+      var result = esEvents.slice(0, numEvents);
+      var events = [];
+      for (var i in result) {
+        var rawEvent = result[i]._source;
+        //var rawSubjects = result[i]._source.subjects;
+        delete rawEvent.id;
+        delete rawEvent.systemTimestamp;
+        var e = event.createEventFromData(rawEvent);
+        events.push(e);
+      }
+      callback(null, events);
+    }
   });
 };
 

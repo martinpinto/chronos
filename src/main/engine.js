@@ -59,15 +59,31 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
   });
 };
 
-
-Engine.prototype.findEventIds = function (eventTemplates,
+Engine.prototype.findEvents = function (eventTemplates,
   timerange,
-  storageState,
   numEvents,
-  resultType,
   callback) {
-  var self = this,
-    events = self.convertRawEvents(eventTemplates);
+  var self = this;
+  try {
+    for (var i in eventTemplates) {
+      event.validateTemplate(eventTemplates[i]);
+    }
+    if (timerange.from > timerange.to) {
+      throw new Error('invalid timerange');
+    }
+    if (!timerange.from) {
+      timerange.from = 0;
+    }
+    if (!timerange.to) {
+      timerange.to = Date.now();
+    }
+  } catch (ex) {
+    return callback(ex);
+  }
+  self.db.findEvents(eventTemplates,
+    timerange,
+    numEvents,
+    callback);
 };
 
 module.exports.Engine = Engine;
