@@ -36,5 +36,6 @@ These are the fields required for subjects to be inserted and also the fields th
 | text           | string    |          |          |
 | manifestation  | string    |          | x        |
 | origin         | string    |          | x        |
-| mimetype       | string    |          | x        |
+| mimeType       | string    |          | x        |
+| storage        | string    |          | x        |
 | currentId      | string    |          | x        |
