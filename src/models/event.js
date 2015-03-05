@@ -108,7 +108,7 @@ function validateTemplate(template) {
   }
 
   // We have no subjects so template is valid
-  if (template.subjects === null || template.subjects.length === 0) {
+  if (!template.subjects || template.subjects.length === 0) {
     return;
   }
 
@@ -194,3 +194,4 @@ module.exports.Event = Event;
 module.exports.requiredFields = requiredFields;
 module.exports.optionalFields = optionalFields;
 module.exports.validateTemplate = validateTemplate;
+module.exports.fields = fields;
