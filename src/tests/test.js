@@ -61,7 +61,7 @@ var printResponse = function (response, callback) {
     var res = JSON.parse(str);
     console.log(res);
     console.log(res.length);
-    callback();
+    setTimeout(callback, 3000);
   });
 };
 

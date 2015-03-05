@@ -4,5 +4,6 @@
   "server": "src/main/server.js",
   "engine": "src/main/engine.js",
   "db": "src/main/db.js",
-  "dbUtils": "src/main/dbUtils.js"
+  "dbUtils": "src/main/dbUtils.js",
+  "mappings": "src/main/mappings.json"
 }

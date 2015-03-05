@@ -7,7 +7,8 @@ var elasticsearch = require('elasticsearch'),
   sugar = require('sugar'),
   Seq = require('seq'),
   config = require('config'),
-  event = acquire('event');
+  event = acquire('event'),
+  mappings = acquire('mappings');
 
 function DB() {
   this.esClient = null;
@@ -47,13 +48,7 @@ DB.prototype.createIndices = function (events, callback) {
           } else {
             self.esClient.indices.create({
               index: index,
-              body: {
-                mappings: {
-                  _default_: {
-                    properties: dbUtils.getEventMapping()
-                  }
-                }
-              }
+              body: mappings
             }, function (err) {
               if (err) {
                 throw err;
