@@ -1,0 +1,139 @@
+{
+  "mappings": {
+    "_default_": {
+      "properties": {
+        "id": {
+          "index": "not_analyzed",
+          "type": "string",
+          "fields": {
+            "analyzed": {
+              "type": "string"
+            }
+          }
+        },
+        "systemTimestamp": {
+          "type": "long"
+        },
+        "timestamp": {
+          "type": "long"
+        },
+        "actor": {
+          "index": "not_analyzed",
+          "type": "string",
+          "fields": {
+            "analyzed": {
+              "type": "string"
+            }
+          }
+        },
+        "manifestation": {
+          "index": "not_analyzed",
+          "type": "string",
+          "fields": {
+            "analyzed": {
+              "type": "string"
+            }
+          }
+        },
+        "interpretation": {
+          "index": "not_analyzed",
+          "type": "string",
+          "fields": {
+            "analyzed": {
+              "type": "string"
+            }
+          }
+        },
+        "origin": {
+          "index": "not_analyzed",
+          "type": "string",
+          "fields": {
+            "analyzed": {
+              "type": "string"
+            }
+          }
+        },
+        "subjects": {
+          "type": "nested",
+          "properties": {
+            "manifestation": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "interpretation": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "currentId": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "origin": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "id": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "mimeType": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "storage": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            },
+            "text": {
+              "index": "not_analyzed",
+              "type": "string",
+              "fields": {
+                "analyzed": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "payload": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

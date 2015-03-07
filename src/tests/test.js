@@ -77,7 +77,7 @@ var req = http.request(options, function (response) {
         },
         {}],
       timerange: {
-        from: 1425260097819
+        from: 1425688965402
       },
       count: 200
     };

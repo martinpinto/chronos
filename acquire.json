@@ -5,5 +5,5 @@
   "engine": "src/main/engine.js",
   "db": "src/main/db.js",
   "dbUtils": "src/main/dbUtils.js",
-  "mappings": "src/main/mappings.json"
+  "mappings": "src/models/mappings.json"
 }
