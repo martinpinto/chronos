@@ -6,5 +6,6 @@
   "db": "src/main/db.js",
   "dbUtils": "src/main/dbUtils.js",
   "mappings": "src/models/mappings.json",
-  "config": "config/config.js"
+  "config": "config/config.js",
+  "eventManager": "src/main/eventManager.js"
 }

@@ -13,5 +13,4 @@ EventManager.prototype.init = function () {
   self.plugins = requireDir(config.pluginsDir);
 };
 
-var em = new EventManager();
-console.log(em.plugins);
+exports.EventManager = EventManager;

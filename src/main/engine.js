@@ -1,14 +1,17 @@
 var acquire = require('acquire'),
   DB = acquire('db').DB,
-  event = acquire('event');
+  event = acquire('event'),
+  eventManager = acquire('eventManager');
 
 var Engine = function () {
   this.db = null;
+  this.eventManager = null;
   this.init();
 };
 
 Engine.prototype.init = function () {
   var self = this;
+  self.eventManager = new eventManager.EventManager();
   self.db = new DB();
 };
 
@@ -33,30 +36,66 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
   var self = this,
     events = self.convertRawEvents(rawEvents);
 
-  self.db.insertEvents(events.events, function (err, res) {
+  for (var i in self.eventManager.plugins) {
+    self.eventManager.plugins[i].preInsert(events.events);
+  }
+
+  var nullEvents = [];
+  var tempEvents = [];
+  for (var j in events.events) {
+    if (events.events[j]) {
+      tempEvents.push(events.events[j]);
+      nullEvents.push(null);
+    } else {
+      nullEvents.push({
+        index: null,
+        type: null,
+        id: null,
+        error: 'event nullified'
+      });
+    }
+  }
+
+  var createResults = function (res) {
     var eventPos = 0,
       result = [];
 
-    if (err) {
-      return callback(err, null);
+    for (var i in nullEvents) {
+      if (!nullEvents[i]) {
+        nullEvents[i] = res[eventPos];
+        eventPos++;
+      }
     }
 
-    for (var i in events.rejected) {
-      if (events.rejected[i]) {
+    eventPos = 0;
+    for (var j in events.rejected) {
+      if (events.rejected[j]) {
         result.push({
           index: null,
           type: null,
           id: null,
-          error: events.rejected[i]
+          error: events.rejected[j]
         });
       } else {
-        result.push(res[eventPos]);
+        result.push(nullEvents[eventPos]);
         eventPos++;
       }
     }
 
     callback(null, result);
-  });
+  };
+
+  if (events.events) {
+    createResults(events.events);
+  } else {
+    self.db.insertEvents(tempEvents, function (err, res) {
+      if (err) {
+        return callback(err, null);
+      } else {
+        createResults(res);
+      }
+    });
+  }
 };
 
 Engine.prototype.findEvents = function (eventTemplates,

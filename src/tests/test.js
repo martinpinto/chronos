@@ -8,11 +8,6 @@ var data1 = {
     interpretation: 'website',
     text: 'Yahoo!',
     manifestation: 'yahoo.com'
-  }, {
-    id: 'http://google.com',
-    interpretation: 'website',
-    text: 'Google Search',
-    manifestation: 'google.com',
   }],
   timestamp: Date.now(),
   manifestation: 'clickFromWebsite',
@@ -32,6 +27,21 @@ var data2 = {
   timestamp: Date.now() + 86400000,
   manifestation: 'clickFromWebsite',
   origin: 'http://youtube.com',
+  payload: []
+};
+
+var data3 = {
+  interpretation: 'undo',
+  actor: 'user1',
+  subjects: [{
+    id: 'http://yahoo.com',
+    interpretation: 'website',
+    text: 'Yahoo!',
+    manifestation: 'yahoo.com'
+  }],
+  timestamp: Date.now(),
+  manifestation: 'clickFromWebsite',
+  origin: 'http://yahoo.com',
   payload: []
 };
 
@@ -93,7 +103,7 @@ var req = http.request(options, function (response) {
 //This is the data we are posting, it needs to be a string or a buffer
 
 var reqParams = {
-  events: [data1, data2, data1]
+  events: [data1, data2, data1, data3]
 };
 req.write(JSON.stringify(reqParams));
 req.end();

@@ -71,7 +71,7 @@ function createEventFromData(data) {
   }
 
   if (event.timestamp > event.systemTimestamp) {
-    throw Error('timestamp is future timestamp');
+    throw Error('future timestamp');
   }
 
   // generate the id at the end, since we are now using parameters
