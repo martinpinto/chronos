@@ -81,11 +81,10 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
         eventPos++;
       }
     }
-
     callback(null, result);
   };
 
-  if (events.events) {
+  if (tempEvents.length == 0) {
     createResults(events.events);
   } else {
     self.db.insertEvents(tempEvents, function (err, res) {
@@ -93,6 +92,17 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
         return callback(err, null);
       } else {
         createResults(res);
+        // Post Insert
+        var events = [];
+        for (var i in res) {
+          if (!res[i].error) {
+            events.push(tempEvents[i])
+          }
+        }
+
+        for (var i in self.eventManager.plugins) {
+          self.eventManager.plugins[i].postInsert(Object.clone(events));
+        }
       }
     });
   }

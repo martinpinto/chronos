@@ -1,11 +1,13 @@
 var preInsert = function (events) {
   for (var i in events) {
-    events[i] = null;
+    if (events[i].interpretation === 'undo') {
+      events[i] = null;
+    }
   }
 };
 
 var postInsert = function (events) {
-  return events;
+  console.log(events);
 };
 
 module.exports.preInsert = preInsert;
