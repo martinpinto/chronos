@@ -8,6 +8,11 @@ var data1 = {
     interpretation: 'website',
     text: 'Yahoo!',
     manifestation: 'yahoo.com'
+  }, {
+    id: 'http://google.com',
+    interpretation: 'website',
+    text: 'Google Search',
+    manifestation: 'google.com',
   }],
   timestamp: Date.now(),
   manifestation: 'clickFromWebsite',

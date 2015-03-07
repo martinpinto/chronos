@@ -6,7 +6,7 @@ var elasticsearch = require('elasticsearch'),
   dbUtils = acquire('dbUtils'),
   sugar = require('sugar'),
   Seq = require('seq'),
-  config = require('config'),
+  config = acquire('config'),
   event = acquire('event'),
   mappings = acquire('mappings');
 
@@ -21,8 +21,8 @@ DB.prototype.init = function () {
   self.esClient = new elasticsearch.Client({
     hosts: [
       {
-        host: config.get('engine.dbConfig.host'),
-        port: config.get('engine.dbConfig.port'),
+        host: config.host,
+        port: config.port,
     }]
   });
 };
