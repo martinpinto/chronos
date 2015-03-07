@@ -36,6 +36,7 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
   var self = this,
     events = self.convertRawEvents(rawEvents);
 
+  // Pre Insert
   for (var i in self.eventManager.plugins) {
     self.eventManager.plugins[i].preInsert(events.events);
   }
@@ -84,7 +85,7 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
     callback(null, result);
   };
 
-  if (tempEvents.length == 0) {
+  if (tempEvents.length === 0) {
     createResults(events.events);
   } else {
     self.db.insertEvents(tempEvents, function (err, res) {
@@ -92,16 +93,14 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
         return callback(err, null);
       } else {
         createResults(res);
-        // Post Insert
-        var events = [];
-        for (var i in res) {
-          if (!res[i].error) {
-            events.push(tempEvents[i])
-          }
-        }
 
-        for (var i in self.eventManager.plugins) {
-          self.eventManager.plugins[i].postInsert(Object.clone(events));
+        // Post Insert
+        var events = res.filter(function (r) {
+          return !r.error;
+        });
+
+        for (var j in self.eventManager.plugins) {
+          self.eventManager.plugins[j].postInsert(Object.clone(events));
         }
       }
     });
