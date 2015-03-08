@@ -88,8 +88,6 @@ DB.prototype.insertEvents = function (events, callback) {
         var items = resp.items;
         for (var i in items) {
           var item = {
-            index: items[i].create._index,
-            type: items[i].create._type,
             id: items[i].create._id,
             error: items[i].create.error ? items[i].create.error : null
           };

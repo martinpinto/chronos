@@ -49,8 +49,6 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
       nullEvents.push(null);
     } else {
       nullEvents.push({
-        index: null,
-        type: null,
         id: null,
         error: 'event nullified'
       });
@@ -72,8 +70,6 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
     for (var j in events.rejected) {
       if (events.rejected[j]) {
         result.push({
-          index: null,
-          type: null,
           id: null,
           error: events.rejected[j]
         });
