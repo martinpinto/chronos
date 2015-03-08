@@ -34,17 +34,24 @@ Engine.prototype.convertRawEvents = function (rawEvents) {
 
 Engine.prototype.insertEvents = function (rawEvents, callback) {
   var self = this,
-    events = self.convertRawEvents(rawEvents);
+    events = self.convertRawEvents(rawEvents),
+    nullEvents = [],
+    tempEvents = [];
 
   // Pre Insert
   for (var i in self.eventManager.plugins) {
+    var eventsLen = events.events.length;
     self.eventManager.plugins[i].preInsert(events.events);
+    if (eventsLen != events.events.length) {
+      throw Error("bad manipulation of events by " + self.eventManager.plugins[i]);
+    }
   }
 
-  var nullEvents = [];
-  var tempEvents = [];
   for (var j in events.events) {
     if (events.events[j]) {
+      if (events.events[j] && !events.events[j].isValid()){
+        throw Error('event broken by plugin');
+      }
       tempEvents.push(events.events[j]);
       nullEvents.push(null);
     } else {

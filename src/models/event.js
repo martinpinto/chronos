@@ -188,6 +188,36 @@ Event.prototype.matchesTemplate = function (eventTemplate) {
   return false;
 };
 
+
+Event.prototype.isValid = function () {
+  var self = this;
+  for (var rf in requiredFields) {
+    if (rf == 'subjects') {
+      continue;
+    }
+    if (!self[rf] || typeof self[rf] != requiredFields[rf]) {
+      return false;
+    }
+  }
+  for (var of in optionalFields) {
+    if (self[of] && typeof self[of] != optionalFields[of]) {
+      return false;
+    }
+  }
+  for (var i in self.subjects) {
+    if (!self.subjects[i].isValid()) {
+      return false;
+    }
+  }
+  var keys = Object.keys(self);
+  for (var i in keys) {
+    if (keys[i] != 'id' && keys[i] != 'systemTimestamp' && !fields[keys[i]]) {
+      return false;
+    }
+  }
+  return true;
+};
+
 // export the class
 module.exports.createEventFromData = createEventFromData;
 module.exports.Event = Event;

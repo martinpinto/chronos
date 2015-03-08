@@ -102,6 +102,27 @@ Subject.prototype.matchesTemplate = function (subjectTemplate) {
   return true;
 };
 
+Subject.prototype.isValid = function () {
+  var self = this;
+  for (var rf in requiredFields) {
+    if (!self[rf] || typeof self[rf] != requiredFields[rf]) {
+      return false;
+    }
+  }
+  for (var of in optionalFields) {
+    if (self[of] && typeof self[of] != optionalFields[of]) {
+      return false;
+    }
+  }
+  var keys = Object.keys(self);
+  for (var i in keys) {
+    if (!fields[keys[i]]) {
+      return false;
+    }
+  }
+  return true;
+};
+
 // export the class
 module.exports.createSubjectFromData = createSubjectFromData;
 module.exports.Subject = Subject;
