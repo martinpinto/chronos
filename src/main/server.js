@@ -23,7 +23,16 @@ Server.prototype.init = function () {
     method: 'POST',
     path: '/insert_events',
     handler: function (request, reply) {
+      var nowait = request.query.nowait !== undefined;
+      if (request.query.nowait !== undefined) {
+        reply({
+          status: 'ok'
+        });
+      }
       self.engine.insertEvents(request.payload.events, function (err, res) {
+        if (nowait) {
+          return;
+        }
         if (err) {
           return reply(JSON.stringify(err), null).code(500);
         } else {
