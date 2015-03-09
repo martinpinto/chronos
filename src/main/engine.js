@@ -50,7 +50,8 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
 
   self.db.insertEvents(events.events, function (err, res) {
     var eventPos = 0,
-      result = [];
+      result = [],
+      postEvents = [];
 
     if (err) {
       return callback(err, null);
@@ -64,11 +65,15 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
         });
       } else {
         result.push(res[eventPos]);
+        if (res[eventPos].error) {
+          postEvents.push(events.events[eventPos]);
+        }
         eventPos++;
       }
     }
     callback(null, result);
-    self.eventManager.postInsert(result);
+
+    self.eventManager.postInsert(postEvents);
   });
 };
 
