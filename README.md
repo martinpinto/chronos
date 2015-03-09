@@ -4,8 +4,14 @@ A structured semantic Event and Activity Log on top of ElasticSearch (ES). Commu
 To sum it up. This will take care of your ES index creation, sharding and document insertion. For now we support only the add operation.
 Reading can be done directly via ES for now but soon enough we will add reading via Chronogeist directly.
 
-This project is heavily based on the Architecture of Zeitgeist. 
+This project is heavily based on the Architecture of Zeitgeist.
 To understand the direction we are taking please read http://web.archive.org/web/20091121192011/http://www.grillbar.org/wordpress/?p=426.
+
+
+## Inserting evetns
+
+![alt tag](https://raw.github.com/seiflotfy/chronos/master/data/chronos_insert_events.png)
+
 
 ## Event structure
 
