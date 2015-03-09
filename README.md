@@ -8,7 +8,11 @@ This project is heavily based on the Architecture of Zeitgeist.
 To understand the direction we are taking please read http://web.archive.org/web/20091121192011/http://www.grillbar.org/wordpress/?p=426.
 
 
-## Inserting evetns
+## Inserting events
+
+When inserting Events, those are pushed through a pipe of "pre"'s (pre insert plugins), before validated. Those "pre"'s can manipualte the inserted events or do operations async with the raw data.
+
+Once data is inserted into the DB, all valid and inserted events will be forwarded to the post plugins in parrallel to do whatever they feel like doing, e.g: (push notifications, insertion to redis, map/reduce, store until needed).
 
 ![alt tag](https://raw.github.com/seiflotfy/chronos/master/data/chronos_insert_events.png)
 
