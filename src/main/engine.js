@@ -33,81 +33,43 @@ Engine.prototype.convertRawEvents = function (rawEvents) {
 };
 
 Engine.prototype.insertEvents = function (rawEvents, callback) {
-  var self = this,
-    events = self.convertRawEvents(rawEvents),
-    nullEvents = [],
-    tempEvents = [];
+  var self = this;
 
   // Pre Insert
-  for (var i in self.eventManager.plugins) {
-    var eventsLen = events.events.length;
-    self.eventManager.plugins[i].preInsert(events.events);
-    if (eventsLen != events.events.length) {
-      throw Error("bad manipulation of events by " + self.eventManager.plugins[i]);
-    }
-  }
+  self.eventManager.preInsert(rawEvents);
+  var events = self.convertRawEvents(rawEvents);
 
-  for (var j in events.events) {
-    if (events.events[j]) {
-      if (events.events[j] && !events.events[j].isValid()){
-        throw Error('event broken by plugin');
-      }
-      tempEvents.push(events.events[j]);
-      nullEvents.push(null);
-    } else {
-      nullEvents.push({
+  if (events.events.length === 0) {
+    return callback(null, events.rejected.map(function (event) {
+      return {
         id: null,
-        error: 'event nullified'
-      });
-    }
+        error: event
+      };
+    }));
   }
 
-  var createResults = function (res) {
+  self.db.insertEvents(events.events, function (err, res) {
     var eventPos = 0,
       result = [];
 
-    for (var i in nullEvents) {
-      if (!nullEvents[i]) {
-        nullEvents[i] = res[eventPos];
-        eventPos++;
-      }
+    if (err) {
+      return callback(err, null);
     }
 
-    eventPos = 0;
-    for (var j in events.rejected) {
-      if (events.rejected[j]) {
+    for (var i in events.rejected) {
+      if (events.rejected[i]) {
         result.push({
           id: null,
-          error: events.rejected[j]
+          error: events.rejected[i]
         });
       } else {
-        result.push(nullEvents[eventPos]);
+        result.push(res[eventPos]);
         eventPos++;
       }
     }
     callback(null, result);
-  };
-
-  if (tempEvents.length === 0) {
-    createResults(events.events);
-  } else {
-    self.db.insertEvents(tempEvents, function (err, res) {
-      if (err) {
-        return callback(err, null);
-      } else {
-        createResults(res);
-
-        // Post Insert
-        var events = res.filter(function (r) {
-          return !r.error;
-        });
-
-        for (var j in self.eventManager.plugins) {
-          self.eventManager.plugins[j].postInsert(Object.clone(events));
-        }
-      }
-    });
-  }
+    self.eventManager.postInsert(result);
+  });
 };
 
 Engine.prototype.findEvents = function (eventTemplates,

@@ -78,51 +78,6 @@ var Subject = function (data) {
 // class methods
 Subject.prototype.init = function () {};
 
-/**
-Return True if this Subject matches *subject_template*. Empty
-fields in the template are treated as wildcards.
-Interpretations and manifestations are also matched if they are
-children of the types specified in `subject_template`.
-See also :meth:`Event.matches_template`
-*/
-Subject.prototype.matchesTemplate = function (subjectTemplate) {
-  var self = this;
-  for (var field in fields) {
-    if (!subjectTemplate[field]) {
-      continue;
-    }
-    if (field === 'storage') {
-      throw Error('chronos does not support searching by "storage" field');
-    } else {
-      if (self[field] !== subjectTemplate[field]) {
-        return false;
-      }
-    }
-  }
-  return true;
-};
-
-Subject.prototype.isValid = function () {
-  var self = this;
-  for (var rf in requiredFields) {
-    if (!self[rf] || typeof self[rf] != requiredFields[rf]) {
-      return false;
-    }
-  }
-  for (var of in optionalFields) {
-    if (self[of] && typeof self[of] != optionalFields[of]) {
-      return false;
-    }
-  }
-  var keys = Object.keys(self);
-  for (var i in keys) {
-    if (!fields[keys[i]]) {
-      return false;
-    }
-  }
-  return true;
-};
-
 // export the class
 module.exports.createSubjectFromData = createSubjectFromData;
 module.exports.Subject = Subject;

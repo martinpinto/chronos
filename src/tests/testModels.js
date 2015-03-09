@@ -70,19 +70,4 @@ describe('Event', function () {
       } catch (err) {}
     });
   });
-
-  describe('#matchesTemplate()', function () {
-    it('Match events', function () {
-
-      var event1 = event.createEventFromData(data1);
-      var template1 = {
-        interpretation: 'click',
-        subjects: [{
-          id: event1.subjects[0].id
-        }, ]
-      };
-
-      assert.ok(event1.matchesTemplate(template1));
-    });
-  });
 });

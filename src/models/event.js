@@ -21,6 +21,9 @@ var optionalFields = {
 var fields = Object.merge(Object.merge({}, requiredFields), optionalFields);
 
 function createEventFromData(data) {
+  if (data == null) {
+    throw Error('event is null');
+  }
   var event = new Event(),
     createSubjects = function (subjects) {
       if (subjects instanceof Array === false) {
@@ -39,14 +42,7 @@ function createEventFromData(data) {
 
   event.systemTimestamp = Date.now();
 
-  // Throw error if event has unsupported field
-  for (var field in data) {
-    if (!requiredFields[field] && !optionalFields[field]) {
-      throw Error('found unsupported key: ' + field);
-    }
-  }
-
-  // Make sure field values passed via data are all ov valid type
+  // Make sure field values passed via data are all of valid type
   for (var rkey in requiredFields) {
     if (typeof data[rkey] !== requiredFields[rkey]) {
       // TODO: Improve error message
@@ -133,90 +129,6 @@ var Event = function () {
 // class methods
 Event.prototype.init = function () {};
 
-/**
-Return True if this event matches *event_template*. The
-matching is done where unset fields in the template is
-interpreted as wild cards. Interpretations and manifestations
-are also matched if they are children of the types specified
-in `event_template`. If the template has more than one
-subject, this event matches if at least one of the subjects
-on this event matches any single one of the subjects on the
-template.
-
-Basically this method mimics the matching behaviour
-found in the :meth:`FindEventIds` method on the Zeitgeist engine.
-*/
-Event.prototype.matchesTemplate = function (eventTemplate) {
-  var self = this;
-  if (!eventTemplate) {
-    return false;
-  }
-
-  validateTemplate(eventTemplate);
-
-  // We use direct member access to speed things up a bit
-  // First match the raw event data
-  for (var field in fields) {
-    // We don't match timestamps and subject will be treated seperatly
-    if (field === 'id' || field === 'timestamp' || field === 'subjects') {
-      continue;
-    }
-    if (eventTemplate[field] && eventTemplate[field] !== self[field]) {
-      return false;
-    }
-  }
-
-  // If eventTemplate has no subjects we have a match
-  if (!eventTemplate.subjects || eventTemplate.subjects.length === 0) {
-    return true;
-  }
-
-  // Now we check the subjects
-  for (var i in eventTemplate.subjects) {
-    var tsubj = eventTemplate.subjects[i];
-    for (var j in self.subjects) {
-      var subj = self.subjects[j];
-      if (!subj.matchesTemplate(tsubj)) {
-        continue;
-      }
-      // We have a matching subject, all good!
-      return true;
-    }
-  }
-
-  // Template has subjects, but we never found a match
-  return false;
-};
-
-
-Event.prototype.isValid = function () {
-  var self = this;
-  for (var rf in requiredFields) {
-    if (rf == 'subjects') {
-      continue;
-    }
-    if (!self[rf] || typeof self[rf] != requiredFields[rf]) {
-      return false;
-    }
-  }
-  for (var of in optionalFields) {
-    if (self[of] && typeof self[of] != optionalFields[of]) {
-      return false;
-    }
-  }
-  for (var i in self.subjects) {
-    if (!self.subjects[i].isValid()) {
-      return false;
-    }
-  }
-  var keys = Object.keys(self);
-  for (var i in keys) {
-    if (keys[i] != 'id' && keys[i] != 'systemTimestamp' && !fields[keys[i]]) {
-      return false;
-    }
-  }
-  return true;
-};
 
 // export the class
 module.exports.createEventFromData = createEventFromData;
