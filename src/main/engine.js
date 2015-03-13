@@ -36,44 +36,45 @@ Engine.prototype.insertEvents = function (rawEvents, callback) {
   var self = this;
 
   // Pre Insert
-  self.eventManager.preInsert(rawEvents);
-  var events = self.convertRawEvents(rawEvents);
+  self.eventManager.preInsert(rawEvents, function () {
+    var events = self.convertRawEvents(rawEvents);
 
-  if (events.events.length === 0) {
-    return callback(null, events.rejected.map(function (event) {
-      return {
-        id: null,
-        error: event
-      };
-    }));
-  }
-
-  self.db.insertEvents(events.events, function (err, res) {
-    var eventPos = 0,
-      result = [],
-      postEvents = [];
-
-    if (err) {
-      return callback(err, null);
-    }
-
-    for (var i in events.rejected) {
-      if (events.rejected[i]) {
-        result.push({
+    if (events.events.length === 0) {
+      return callback(null, events.rejected.map(function (event) {
+        return {
           id: null,
-          error: events.rejected[i]
-        });
-      } else {
-        result.push(res[eventPos]);
-        if (res[eventPos].error) {
-          postEvents.push(events.events[eventPos]);
-        }
-        eventPos++;
-      }
+          error: event
+        };
+      }));
     }
-    callback(null, result);
 
-    self.eventManager.postInsert(postEvents);
+    self.db.insertEvents(events.events, function (err, res) {
+      var eventPos = 0,
+        result = [],
+        postEvents = [];
+
+      if (err) {
+        return callback(err, null);
+      }
+
+      for (var i in events.rejected) {
+        if (events.rejected[i]) {
+          result.push({
+            id: null,
+            error: events.rejected[i]
+          });
+        } else {
+          result.push(res[eventPos]);
+          if (res[eventPos].error) {
+            postEvents.push(events.events[eventPos]);
+          }
+          eventPos++;
+        }
+      }
+      callback(null, result);
+
+      self.eventManager.postInsert(postEvents);
+    });
   });
 };
 

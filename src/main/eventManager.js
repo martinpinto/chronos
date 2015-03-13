@@ -1,6 +1,6 @@
 var requireDir = require('require-dir'),
-      acquire = require('acquire'),
-      config = acquire('config');
+  acquire = require('acquire'),
+  config = acquire('config');
 
 var EventManager = function () {
   this.dir = [];
@@ -14,15 +14,31 @@ EventManager.prototype.init = function () {
 };
 
 
-EventManager.prototype.preInsert = function (rawEvents) {
-  var self = this;
-  for (var i in self.plugins) {
-    var rawLength = rawEvents.length;
-    self.plugins[i].preInsert(rawEvents);
-    if (rawLength !== rawEvents.length) {
-      throw Error('Events list length changed ' + self.plugins[i]);
+EventManager.prototype.preInsert = function (rawEvents, callback) {
+  var self = this,
+      i = 0,
+      plugins = [];
+
+  for (var p in self.plugins) {
+    plugins.push(self.plugins[p]);
+  }
+
+  var preInsert = function () {
+    var plugin = plugins[i];
+    if (plugin == null) {
+      return callback();
+    } else {
+      var rawLength = rawEvents.length;
+      plugin.preInsert(rawEvents, function () {
+        if (rawLength !== rawEvents.length) {
+          throw Error('Events list length changed ' + plugin);
+        }
+        i++;
+        preInsert();
+      })
     }
   }
+  preInsert();
 };
 
 EventManager.prototype.postInsert = function (events) {

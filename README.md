@@ -2,11 +2,10 @@
 
 A structured semantic Event and Activity Log on top of ElasticSearch (ES). Communication is via RESTful API.
 To sum it up. This will take care of your ES index creation, sharding and document insertion. For now we support only the add operation.
-Reading can be done directly via ES for now but soon enough we will add reading via Chronogeist directly.
+Reading can be done directly via ES.
 
 This project is heavily based on the Architecture of Zeitgeist.
 To understand the direction we are taking please read http://web.archive.org/web/20091121192011/http://www.grillbar.org/wordpress/?p=426.
-
 
 ## Inserting events
 
@@ -15,7 +14,6 @@ When inserting Events, those are pushed through a pipe of "pre"'s (pre insert pl
 Once data is inserted into the DB, all valid and inserted events will be forwarded to the post plugins in parrallel to do whatever they feel like doing, e.g: (push notifications, insertion to redis, map/reduce, store until needed).
 
 ![alt tag](https://raw.github.com/seiflotfy/chronos/master/data/chronos_insert_events.png)
-
 
 ## Event structure
 
