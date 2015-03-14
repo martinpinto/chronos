@@ -7,6 +7,7 @@
     }
   },
   "plugins": {
-    "directory": "src/plugins"
+    "directory": "src/plugins",
+    "list": ["donothing", "test"]
   }
 }

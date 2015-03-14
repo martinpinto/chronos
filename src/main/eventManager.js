@@ -11,17 +11,16 @@ var EventManager = function () {
 EventManager.prototype.init = function () {
   var self = this;
   self.plugins = requireDir(config.pluginsDir);
+  self.pluginsList = config.pluginsList;
 };
 
 
 EventManager.prototype.preInsert = function (rawEvents, callback) {
   var self = this,
-      i = 0,
-      plugins = [];
-
-  for (var p in self.plugins) {
-    plugins.push(self.plugins[p]);
-  }
+    i = 0,
+    plugins = self.pluginsList.map(function (p) {
+      return self.plugins[p];
+    });
 
   var preInsert = function () {
     var plugin = plugins[i];
@@ -35,9 +34,9 @@ EventManager.prototype.preInsert = function (rawEvents, callback) {
         }
         i++;
         preInsert();
-      })
+      });
     }
-  }
+  };
   preInsert();
 };
 
