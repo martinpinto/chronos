@@ -8,7 +8,9 @@ var elasticsearch = require('elasticsearch'),
   Seq = require('seq'),
   config = acquire('config'),
   event = acquire('event'),
-  mappings = acquire('mappings');
+  mappings = acquire('mappings'),
+  linear = require('everpolate').linear;
+
 
 function DB() {
   this.esClient = null;
@@ -24,6 +26,43 @@ DB.prototype.init = function () {
         host: config.host,
         port: config.port,
     }]
+  });
+};
+
+DB.prototype.getNextShardingCount = function (callback) {
+  var self = this;
+  self.esClient.indices.stats({}, function (err, resp) {
+    if (err) {
+      callback(err, null);
+    }
+    var xy = {},
+      keys = [],
+      x = [],
+      y = [];
+
+    for (var index in resp.indices) {
+      if (index.startsWith('cg_')) {
+        xy[index] = resp.indices[index].primaries.docs.count;
+        keys.push(index);
+      }
+    }
+    keys.sort();
+
+    for (var i = 0; i < keys.length; i++) {
+      x.push(i);
+      y.push(xy[keys[i]]);
+    }
+    var result = linear(keys.length, x, y);
+
+    if (result < 1) {
+      result = 1;
+    }
+
+    // max 500 000 docs be shard
+    result = (result / 500000) + 1;
+    result = result | 0;
+
+    callback(err, result);
   });
 };
 
@@ -46,14 +85,27 @@ DB.prototype.createIndices = function (events, callback) {
           if (resp === true) {
             that();
           } else {
-            self.esClient.indices.create({
-              index: index,
-              body: mappings
-            }, function (err) {
+            self.getNextShardingCount(function (err, res) {
               if (err) {
-                throw err;
+                return that();
               }
-              that();
+              self.esClient.indices.create({
+                index: index,
+                body: {
+                  mappings: mappings,
+                  settings: {
+                    index: {
+                      number_of_shards: res,
+                      number_of_replicas: 0
+                    }
+                  }
+                }
+              }, function (err) {
+                if (err) {
+                  throw err;
+                }
+                that();
+              });
             });
           }
         });

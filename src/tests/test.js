@@ -82,6 +82,7 @@ var printResponse = function (response, callback) {
 
 var req = http.request(options, function (response) {
   printResponse(response, function () {
+    /*
     var req2 = http.request(options2, function (response) {
       printResponse(response, function () {});
     });
@@ -98,6 +99,7 @@ var req = http.request(options, function (response) {
     };
     req2.write(JSON.stringify(reqParams));
     req2.end();
+    */
   });
 });
 //This is the data we are posting, it needs to be a string or a buffer
