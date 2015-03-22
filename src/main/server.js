@@ -1,6 +1,7 @@
 var Hapi = require('hapi'),
   acquire = require('acquire'),
-  Engine = acquire('engine').Engine;
+  Engine = acquire('engine').Engine,
+  winston = require('winston');
 
 // Create a server with a host and port
 var Server = function () {
@@ -63,6 +64,7 @@ Server.prototype.init = function () {
         });
     }
   });
+  winston.log('info', 'Chronos is up and running...');
 };
 
 Server.prototype.start = function () {

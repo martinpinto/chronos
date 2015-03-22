@@ -9,7 +9,8 @@ var elasticsearch = require('elasticsearch'),
   config = acquire('config'),
   event = acquire('event'),
   mappings = acquire('mappings'),
-  linear = require('everpolate').linear;
+  linear = require('everpolate').linear,
+  winston = require('winston');
 
 
 function DB() {
@@ -27,6 +28,8 @@ DB.prototype.init = function () {
         port: config.port,
     }]
   });
+  winston.log('info', 'Initializing database at %s:%s.', 
+              config.host, config.port);
 };
 
 DB.prototype.getNextShardingCount = function (callback) {

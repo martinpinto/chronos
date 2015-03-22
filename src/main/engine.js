@@ -1,12 +1,14 @@
 var acquire = require('acquire'),
   DB = acquire('db').DB,
   event = acquire('event'),
-  eventManager = acquire('eventManager');
+  eventManager = acquire('eventManager'),
+  winston = require('winston');
 
 var Engine = function () {
   this.db = null;
   this.eventManager = null;
   this.init();
+  winston.log('info', 'HTTP server started.');
 };
 
 Engine.prototype.init = function () {

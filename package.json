@@ -13,7 +13,8 @@
     "config": "x.x.x",
     "mocha": "x.x.x",
     "require-dir": "x.x.x",
-    "everpolate": "x.x.x"
+    "everpolate": "x.x.x",
+    "winston": "x.x.x"
   },
   "engines": {
     "node": "x.x.x",
